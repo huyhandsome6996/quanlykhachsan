@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'khach_san',
+    'dat_phong',
 ]
 
 MIDDLEWARE = [
