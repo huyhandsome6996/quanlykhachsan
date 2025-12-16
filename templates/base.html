@@ -1,0 +1,134 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>
+      {% block title %}
+        Spring View Garden SaPa - Quản lý khách sạn
+      {% endblock %}
+    </title>
+
+    <!-- CSS Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+
+    <style>
+      body {
+        background: #f5f6fa;
+      }
+
+      .sidebar {
+        width: 260px;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background: #244f3d;
+        color: #ffffff;
+        padding-top: 70px;
+      }
+
+      .sidebar a {
+        color: #dfe6e9;
+        text-decoration: none;
+        display: block;
+        padding: 10px 20px;
+      }
+
+      .sidebar a:hover,
+      .sidebar a.active {
+        background: rgba(255, 255, 255, 0.12);
+        color: #ffffff;
+      }
+
+      .nhom-menu {
+        padding: 6px 20px 2px;
+        font-size: 11px;
+        text-transform: uppercase;
+        opacity: 0.7;
+      }
+
+      .main-content {
+        margin-left: 260px;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .topbar {
+        height: 60px;
+        background: #ffffff;
+        border-bottom: 1px solid #dddddd;
+        position: fixed;
+        top: 0;
+        left: 260px;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        z-index: 1000;
+      }
+    </style>
+
+    {% block head %}{% endblock %}
+  </head>
+
+  <body>
+    {% with view_name=request.resolver_match.view_name %}
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="text-center mb-3">
+        <strong>🌿 Spring View Garden SaPa</strong>
+        <div style="font-size: 12px">Hệ thống quản lý nội bộ</div>
+      </div>
+
+      <div class="nhom-menu">Trang chủ</div>
+      <a
+        href="{% url 'bao_cao:trang_chu' %}"
+        class="{% if view_name == 'bao_cao:trang_chu' %}active{% endif %}"
+      >
+        <i class="bi bi-house"></i> Bảng điều khiển
+      </a>
+
+      <div class="nhom-menu">Đặt phòng</div>
+      <a href="#"><i class="bi bi-journal-plus"></i> Tạo đặt phòng</a>
+      <a href="#"><i class="bi bi-journal-text"></i> Danh sách đặt phòng</a>
+
+      <div class="nhom-menu">Hệ thống</div>
+      <a href="/admin/"><i class="bi bi-gear"></i> Trang Admin</a>
+    </div>
+    {% endwith %}
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <strong>{% block page_title %}Quản lý khách sạn{% endblock %}</strong>
+      <div>
+        {% if user.is_authenticated %}
+          Xin chào {{ user.username }}
+        {% else %}
+          Chưa đăng nhập
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="main-content" style="margin-top: 80px">
+      {% block content %}{% endblock %}
+    </div>
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

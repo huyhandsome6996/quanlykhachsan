@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Trang chủ - Spring View Garden SaPa{% endblock %}
+{% block page_title %}Trang chủ / Bảng điều khiển{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="text-muted">Phòng trống</div>
+        <div class="fs-3 fw-bold">{{ so_phong_trong }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="text-muted">Phòng đang thuê</div>
+        <div class="fs-3 fw-bold">{{ so_phong_dang_thue }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="text-muted">Doanh thu hôm nay</div>
+        <div class="fs-3 fw-bold">{{ doanh_thu_hom_nay }} đ</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="text-muted">Đơn đặt phòng hôm nay</div>
+        <div class="fs-3 fw-bold">{{ don_dat_hom_nay }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="my-4" />
+
+<h3>Danh sách phòng</h3>
+
+<div class="row g-3">
+  {% for phong in danh_sach_phong %}
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5>Phòng {{ phong.ma_phong }}</h5>
+        <p class="text-muted">{{ phong.loai_phong.ten_loai }}</p>
+
+        {% if phong.trang_thai == 'trong' %}
+          <span class="badge bg-success">TRỐNG</span>
+        {% elif phong.trang_thai == 'dang_thue' %}
+          <span class="badge bg-danger">ĐANG THUÊ</span>
+        {% elif phong.trang_thai == 'dang_bao_tri' %}
+          <span class="badge bg-warning text-dark">ĐANG BẢO TRÌ</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% empty %}
+    <div class="col-12">
+      <div class="alert alert-info">Chưa có phòng nào.</div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
