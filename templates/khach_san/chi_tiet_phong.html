@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Chi tiết phòng {{ phong.ma_phong }}{% endblock %}
+{% block page_title %}Chi tiết phòng {{ phong.ma_phong }}{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h5 class="mb-3">Thông tin phòng</h5>
+
+    <p><strong>Mã phòng:</strong> {{ phong.ma_phong }}</p>
+    <p><strong>Loại phòng:</strong> {{ phong.loai_phong.ten_loai }}</p>
+    <p>
+      <strong>Trạng thái:</strong>
+      {% if phong.trang_thai == 'trong' %}
+        <span class="badge bg-success">Trống</span>
+      {% elif phong.trang_thai == 'dang_thue' %}
+        <span class="badge bg-danger">Đang thuê</span>
+      {% elif phong.trang_thai == 'dang_bao_tri' %}
+        <span class="badge bg-warning text-dark">Đang bảo trì</span>
+      {% endif %}
+    </p>
+
+    <a href="{% url 'khach_san:danh_sach_phong' %}"
+       class="btn btn-secondary btn-sm">
+      ← Quay lại danh sách phòng
+    </a>
+  </div>
+</div>
+{% endblock %}

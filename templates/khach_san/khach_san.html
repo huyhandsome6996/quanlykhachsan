@@ -4,18 +4,42 @@
 {% block page_title %}Danh sách phòng{% endblock %}
 
 {% block content %}
-<table class="table table-bordered">
-  <tr>
-    <th>Mã phòng</th>
-    <th>Loại phòng</th>
-    <th>Trạng thái</th>
-  </tr>
-  {% for phong in danh_sach_phong %}
-  <tr>
-    <td>{{ phong.ma_phong }}</td>
-    <td>{{ phong.loai_phong.ten_loai }}</td>
-    <td>{{ phong.trang_thai }}</td>
-  </tr>
-  {% endfor %}
+<table class="table table-bordered table-hover align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>Mã phòng</th>
+      <th>Loại phòng</th>
+      <th>Trạng thái</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for phong in danh_sach_phong %}
+    <tr>
+      <td>
+        <a href="{% url 'khach_san:chi_tiet_phong' phong.ma_phong %}">
+          <strong>{{ phong.ma_phong }}</strong>
+        </a>
+      </td>
+
+      <td>{{ phong.loai_phong.ten_loai }}</td>
+
+      <td>
+        {% if phong.trang_thai == 'trong' %}
+          <span class="badge bg-success">Trống</span>
+        {% elif phong.trang_thai == 'dang_thue' %}
+          <span class="badge bg-danger">Đang thuê</span>
+        {% elif phong.trang_thai == 'dang_bao_tri' %}
+          <span class="badge bg-warning text-dark">Đang bảo trì</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="3" class="text-center text-muted">
+        Chưa có phòng nào trong hệ thống
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
 </table>
 {% endblock %}
