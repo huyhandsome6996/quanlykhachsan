@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Check-out phòng{% endblock %}
+{% block page_title %}Check-out phòng {{ phong.ma_phong }}{% endblock %}
+
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+
+  <div class="mb-3">
+    <label class="form-label">Số đêm ở</label>
+    <input type="number" name="so_dem" class="form-control" value="1" min="1">
+  </div>
+
+  <button type="submit" class="btn btn-danger">
+    Xác nhận check-out & tính tiền
+  </button>
+</form>
+{% endblock %}
