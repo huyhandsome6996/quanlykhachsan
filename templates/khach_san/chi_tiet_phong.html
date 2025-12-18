@@ -21,10 +21,36 @@
       {% endif %}
     </p>
 
-    <a href="{% url 'khach_san:danh_sach_phong' %}"
-       class="btn btn-secondary btn-sm">
-      ← Quay lại danh sách phòng
-    </a>
+<!--sửa lại nút quay lại trang chủ-->    
+  <a
+    href="{% url 'bao_cao:trang_chu' %}"
+    class="btn btn-primary btn-sm w-100"
+  >
+    quay lại trang chủ
+  </a>
+<!--sửa lại nút quay lại trang chủ-->
+
+
+
   </div>
 </div>
+<hr>
+
+{% if phong.trang_thai == 'trong' %}
+  <a
+    href="{% url 'khach_san:check_in' phong.ma_phong %}"
+    class="btn btn-success"
+  >
+    Check-in
+  </a>
+
+{% elif phong.trang_thai == 'dang_thue' %}
+  <a
+    href="{% url 'khach_san:check_out' phong.ma_phong %}"
+    class="btn btn-danger"
+  >
+    Check-out
+  </a>
+{% endif %}
+
 {% endblock %}
