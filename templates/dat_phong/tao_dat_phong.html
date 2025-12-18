@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Tạo đặt phòng{% endblock %}
+{% block page_title %}Tạo đặt phòng{% endblock %}
+
+{% block content %}
+<form method="post" class="card shadow-sm p-4" style="max-width: 600px">
+  {% csrf_token %}
+
+  <div class="mb-3">
+    <label class="form-label">Phòng</label>
+    <select name="phong" class="form-select" required>
+      {% for phong in phong_trong %}
+        <option value="{{ phong.id }}">
+          Phòng {{ phong.ma_phong }} – {{ phong.loai_phong.ten_loai }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Tên khách</label>
+    <input type="text" name="ten_khach" class="form-control" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Loại khách</label>
+    <select name="loai_khach" class="form-select">
+      <option value="vang_lai">Vãng lai</option>
+      <option value="tour">Khách tour đoàn</option>
+      <option value="booking">Booking</option>
+      <option value="agoda">Agoda</option>
+      <option value="traveloka">Traveloka</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Ngày nhận phòng</label>
+    <input type="date" name="ngay_nhan" class="form-control" required>
+  </div>
+
+  <button class="btn btn-primary">
+    Xác nhận đặt phòng
+  </button>
+</form>
+{% endblock %}
