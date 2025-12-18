@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Thanh toán{% endblock %}
+{% block page_title %}Kết quả thanh toán{% endblock %}
+
+{% block content %}
+<ul class="list-group">
+  <li class="list-group-item">
+    <strong>Phòng:</strong> {{ phong.ma_phong }}
+  </li>
+  <li class="list-group-item">
+    <strong>Số đêm:</strong> {{ so_dem }}
+  </li>
+  <li class="list-group-item">
+    <strong>Giá / đêm:</strong> {{ gia }} đ
+  </li>
+  <li class="list-group-item text-danger">
+    <strong>Tổng tiền:</strong> {{ tong_tien }} đ
+  </li>
+</ul>
+
+<a href="{% url 'bao_cao:trang_chu' %}" class="btn btn-primary mt-3">
+  Quay về danh sách phòng
+</a>
+{% endblock %}
