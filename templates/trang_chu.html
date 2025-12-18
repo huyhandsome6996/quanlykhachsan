@@ -52,8 +52,26 @@
     <div class="card shadow-sm">
       <div class="card-body">
         <h5>Phòng {{ phong.ma_phong }}</h5>
-        <p class="text-muted">{{ phong.loai_phong.ten_loai }}</p>
+        <p class="text-muted">{{ phong.loai_phong.ten_loai }}
 
+
+
+<!--thêm nút xem chi tiết phòng-->
+          <div class="mt-auto">
+  <a
+    href="{% url 'khach_san:chi_tiet_phong' phong.ma_phong %}"
+    class="btn btn-primary btn-sm w-100"
+  >
+    Xem chi tiết
+  </a>
+</div>
+
+
+
+        </p>
+
+
+        
         {% if phong.trang_thai == 'trong' %}
           <span class="badge bg-success">TRỐNG</span>
         {% elif phong.trang_thai == 'dang_thue' %}

@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Phong
 
 
@@ -14,3 +14,22 @@ def chi_tiet_phong(request, ma_phong):
     return render(request, 'khach_san/chi_tiet_phong.html', {
         'phong': phong
     })
+
+def check_in(request, ma_phong):
+    phong = get_object_or_404(Phong, ma_phong=ma_phong)
+
+    if phong.trang_thai == 'trong':
+        phong.trang_thai = 'dang_thue'
+        phong.save()
+
+    return redirect('khach_san:chi_tiet_phong', ma_phong=ma_phong)
+
+
+def check_out(request, ma_phong):
+    phong = get_object_or_404(Phong, ma_phong=ma_phong)
+
+    if phong.trang_thai == 'dang_thue':
+        phong.trang_thai = 'trong'
+        phong.save()
+
+    return redirect('khach_san:chi_tiet_phong', ma_phong=ma_phong)
