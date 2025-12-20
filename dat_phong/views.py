@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_list_or_404
 from khach_san.models import Phong
 from .models import DatPhong
 from django.utils import timezone
@@ -34,3 +34,32 @@ def tao_dat_phong(request):
         'phong_trong': phong_trong
     }
     return render(request, 'dat_phong/tao_dat_phong.html', context)
+
+def check_out(request, dat_phong_id):
+    dat_phong = get_object_or_404(DatPhong, id=dat_phong_id, dang_o=True)
+
+    ngay_tra = timezone.now().date()
+    so_dem = (ngay_tra - dat_phong.ngay_nhan).days
+    if so_dem <= 0:
+        so_dem = 1
+
+    gia_mot_dem = dat_phong.phong.loai_phong.gia_mot_dem
+
+
+   
+    tong_tien = so_dem * gia_mot_dem 
+###############################################################
+
+    if request.method == 'POST':
+        # cập nhật đơn đặt phòng
+        dat_phong.ngay_tra = ngay_tra
+        dat_phong.dang_o = False
+        dat_phong.save()
+
+        # cập nhật phòng
+        phong = dat_phong.phong
+        phong.trang_thai = 'trong'
+        phong.save()
+
+        return redirect('bao_cao:trang_chu')
+
