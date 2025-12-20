@@ -1,25 +1,78 @@
+<!--Xuân 5-->
+
 {% extends "base.html" %}
 
 {% block title %}Thanh toán{% endblock %}
 {% block page_title %}Kết quả thanh toán{% endblock %}
 
 {% block content %}
-<ul class="list-group">
-  <li class="list-group-item">
-    <strong>Phòng:</strong> {{ phong.ma_phong }}
-  </li>
-  <li class="list-group-item">
-    <strong>Số đêm:</strong> {{ so_dem }}
-  </li>
-  <li class="list-group-item">
-    <strong>Giá / đêm:</strong> {{ gia }} đ
-  </li>
-  <li class="list-group-item text-danger">
-    <strong>Tổng tiền:</strong> {{ tong_tien }} đ
-  </li>
-</ul>
 
-<a href="{% url 'bao_cao:trang_chu' %}" class="btn btn-primary mt-3">
+<div class="card mb-3">
+  <div class="card-header">
+    <strong>Thông tin phòng</strong>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">
+      <strong>Phòng:</strong> {{ phong.ma_phong }}
+    </li>
+    <li class="list-group-item">
+      <strong>Số đêm:</strong> {{ so_dem }}
+    </li>
+    <li class="list-group-item">
+      <strong>Giá / đêm:</strong> {{ gia }} đ
+    </li>
+    <li class="list-group-item">
+      <strong>Tiền phòng:</strong> {{ tien_phong }} đ
+    </li>
+  </ul>
+</div>
+
+<div class="card mb-3">
+  <div class="card-header">
+    <strong>Dịch vụ đã sử dụng</strong>
+  </div>
+
+  {% if ds_dich_vu %}
+  <table class="table table-bordered mb-0">
+    <thead class="table-light">
+      <tr>
+        <th>Tên dịch vụ</th>
+        <th>Số lượng</th>
+        <th>Giá</th>
+        <th>Thành tiền</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for dv in ds_dich_vu %}
+      <tr>
+        <td>{{ dv.dich_vu.ten_dich_vu }}</td>
+        <td>{{ dv.so_luong }}</td>
+        <td>{{ dv.dich_vu.gia }} đ</td>
+        <td>{{ dv.thanh_tien }} đ</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="p-3 text-end">
+    <strong>Tổng tiền dịch vụ: {{ tong_dich_vu }} đ</strong>
+  </div>
+
+  {% else %}
+  <div class="p-3">
+    <em>Không sử dụng dịch vụ</em>
+  </div>
+  {% endif %}
+</div>
+
+<div class="alert alert-danger text-end">
+  <h5 class="mb-0">
+    Tổng tiền thanh toán: {{ tong_tien }} đ
+  </h5>
+</div>
+
+<a href="{% url 'bao_cao:trang_chu' %}" class="btn btn-primary">
   Quay về danh sách phòng
 </a>
+
 {% endblock %}
