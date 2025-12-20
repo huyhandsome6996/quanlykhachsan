@@ -35,6 +35,7 @@ def tao_dat_phong(request):
     }
     return render(request, 'dat_phong/tao_dat_phong.html', context)
 
+from .models import SuDungDichVu #nguyên 5
 def check_out(request, dat_phong_id):
     dat_phong = get_object_or_404(DatPhong, id=dat_phong_id, dang_o=True)
 
@@ -44,12 +45,12 @@ def check_out(request, dat_phong_id):
         so_dem = 1
 
     gia_mot_dem = dat_phong.phong.loai_phong.gia_mot_dem
+    tong_dich_vu = sum(dv.thanh_tien() for dv in SuDungDichVu.objects.filter(dat_phong=dat_phong)) #nguyên 5
+    tong_tien = so_dem * gia_mot_dem + tong_dich_vu #nguyên 5: cộng thêm tổng dịch vụ sử dụng
+###############################################################
 
 
    
-    tong_tien = so_dem * gia_mot_dem 
-###############################################################
-
     if request.method == 'POST':
         # cập nhật đơn đặt phòng
         dat_phong.ngay_tra = ngay_tra
