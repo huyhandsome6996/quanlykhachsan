@@ -50,3 +50,21 @@ class DatPhong(models.Model):
     def __str__(self):
         return f"{self.phong.ma_phong} - {self.ten_khach}"
 
+#nguyên 5
+class DichVu(models.Model):
+    ten_dich_vu = models.CharField(max_length=100)
+    gia = models.PositiveIntegerField()
+    don_vi = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.ten_dich_vu
+
+#nguyên 5
+class SuDungDichVu(models.Model):
+    dat_phong = models.ForeignKey(DatPhong, on_delete=models.CASCADE)
+    dich_vu = models.ForeignKey(DichVu, on_delete=models.PROTECT)
+    so_luong = models.PositiveIntegerField(default=1)
+    thoi_diem = models.DateTimeField(auto_now_add=True)
+
+    def thanh_tien(self):
+        return self.so_luong * self.dich_vu.gia
