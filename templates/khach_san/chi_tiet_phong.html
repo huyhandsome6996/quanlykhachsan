@@ -36,20 +36,16 @@
 </div>
 <hr>
 
+<!-- ngọ 4: -->
 {% if phong.trang_thai == 'trong' %}
-  <a
-    href="{% url 'khach_san:check_in' phong.ma_phong %}"
-    class="btn btn-success"
-  >
+  <a href="{% url 'khach_san:check_in' phong.ma_phong %}"
+     class="btn btn-success">
     Check-in
   </a>
-
-{% elif phong.trang_thai == 'dang_thue' %}
-  <a
-    href="{% url 'khach_san:check_out' phong.ma_phong %}"
-    class="btn btn-danger"
-  >
-    Check-out
+{% elif phong.trang_thai == 'dang_thue' and dat_phong_hien_tai %}
+  <a href="{% url 'dat_phong:check_out' dat_phong_hien_tai.id %}"
+     class="btn btn-danger">
+    Check-out & Tính tiền
   </a>
 {% endif %}
 
