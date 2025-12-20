@@ -1,0 +1,30 @@
+<!--ngọ 4-->
+
+{% extends "base.html" %}
+
+{% block title %}Check-out{% endblock %}
+{% block page_title %}Check-out phòng{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm p-4" style="max-width: 600px">
+  <h5>Phòng {{ dat_phong.phong.ma_phong }}</h5>
+  <p>Khách: <strong>{{ dat_phong.ten_khach }}</strong></p>
+  <p>Ngày nhận: {{ dat_phong.ngay_nhan }}</p>
+  <p>Ngày trả: {{ ngay_tra }}</p>
+
+  <hr>
+
+  <p>Số đêm: <strong>{{ so_dem }}</strong></p>
+  <p>Giá / đêm: <strong>{{ gia_mot_dem }} đ</strong></p>
+  <p class="fs-5 text-danger">
+    Tổng tiền: <strong>{{ tong_tien }} đ</strong>
+  </p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button class="btn btn-danger">
+      Xác nhận check-out
+    </button>
+  </form>
+</div>
+{% endblock %}
