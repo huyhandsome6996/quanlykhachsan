@@ -1,30 +1,100 @@
-<!--ngọ 4-->
-
 {% extends "base.html" %}
 
-{% block title %}Check-out{% endblock %}
-{% block page_title %}Check-out phòng{% endblock %}
+{% block title %}
+Check-out & Tính tiền
+{% endblock %}
+
+{% block page_title %}
+Check-out & Tính tiền
+{% endblock %}
 
 {% block content %}
-<div class="card shadow-sm p-4" style="max-width: 600px">
-  <h5>Phòng {{ dat_phong.phong.ma_phong }}</h5>
-  <p>Khách: <strong>{{ dat_phong.ten_khach }}</strong></p>
-  <p>Ngày nhận: {{ dat_phong.ngay_nhan }}</p>
-  <p>Ngày trả: {{ ngay_tra }}</p>
 
-  <hr>
-
-  <p>Số đêm: <strong>{{ so_dem }}</strong></p>
-  <p>Giá / đêm: <strong>{{ gia_mot_dem }} đ</strong></p>
-  <p class="fs-5 text-danger">
-    Tổng tiền: <strong>{{ tong_tien }} đ</strong>
-  </p>
-
-  <form method="post">
-    {% csrf_token %}
-    <button class="btn btn-danger">
-      Xác nhận check-out
-    </button>
-  </form>
+<div class="card mb-4">
+  <div class="card-header">
+    <h5 class="mb-0">Thông tin phòng</h5>
+  </div>
+  <div class="card-body">
+    <p><strong>Mã phòng:</strong> {{ dat_phong.phong.ma_phong }}</p>
+    <p><strong>Loại phòng:</strong> {{ dat_phong.phong.loai_phong.ten_loai }}</p>
+    <p><strong>Giá / đêm:</strong> {{ dat_phong.phong.loai_phong.gia_mot_dem }} đ</p>
+    <p><strong>Khách:</strong> {{ dat_phong.ten_khach }}</p>
+    <p><strong>Ngày nhận:</strong> {{ dat_phong.ngay_nhan }}</p>
+    <p><strong>Ngày trả:</strong> {{ dat_phong.ngay_tra|default:"Hôm nay" }}</p>
+    <p><strong>Số đêm:</strong> {{ so_dem }}</p>
+  </div>
 </div>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <h5 class="mb-0">Chi phí phòng</h5>
+  </div>
+  <div class="card-body">
+    <p>
+      {{ so_dem }} đêm × {{ dat_phong.phong.loai_phong.gia_mot_dem }} đ
+      = <strong>{{ tien_phong }} đ</strong>
+    </p>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <h5 class="mb-0">Dịch vụ đã sử dụng</h5>
+  </div>
+  <div class="card-body">
+    {% if ds_dich_vu %}
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Tên dịch vụ</th>
+            <th>Đơn giá</th>
+            <th>Số lượng</th>
+            <th>Thành tiền</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for dv in ds_dich_vu %}
+          <tr>
+            <td>{{ dv.dich_vu.ten_dich_vu }}</td>
+            <td>{{ dv.dich_vu.gia }} đ</td>
+            <td>{{ dv.so_luong }}</td>
+            <td>{{ dv.thanh_tien }} đ</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <p class="text-end">
+        <strong>Tổng tiền dịch vụ: {{ tien_dich_vu }} đ</strong>
+      </p>
+    {% else %}
+      <p>Không có dịch vụ nào được sử dụng.</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card mb-4 border-danger">
+  <div class="card-header bg-danger text-white">
+    <h5 class="mb-0">Tổng thanh toán</h5>
+  </div>
+  <div class="card-body">
+    <h4 class="text-danger">
+      Tổng tiền cần thanh toán: {{ tong_tien }} đ
+    </h4>
+  </div>
+</div>
+
+<form method="post">
+  {% csrf_token %}
+  <div class="d-flex gap-2">
+    <button type="submit" class="btn btn-danger">
+      Xác nhận Check-out
+    </button>
+
+    <a href="{% url 'khach_san:chi_tiet_phong' dat_phong.phong.ma_phong %}"
+       class="btn btn-secondary">
+      Quay lại
+    </a>
+  </div>
+</form>
+
 {% endblock %}

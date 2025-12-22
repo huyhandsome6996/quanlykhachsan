@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h3>Thêm dịch vụ cho phòng {{ dat_phong.phong.ma_phong }}</h3>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label class="form-label">Chọn dịch vụ</label>
+            <select name="dich_vu" class="form-control" required>
+                {% for dv in danh_sach_dich_vu %}
+                    <option value="{{ dv.id }}">
+                        {{ dv.ten_dich_vu }} - {{ dv.gia }} đ / {{ dv.don_vi }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Số lượng</label>
+            <input type="number" name="so_luong" class="form-control" value="1" min="1" required>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            ➕ Thêm dịch vụ
+        </button>
+
+        <a href="{% url 'khach_san:chi_tiet_phong' dat_phong.phong.ma_phong %}"
+           class="btn btn-secondary">
+            ⬅ Quay lại
+        </a>
+    </form>
+</div>
+
+{% endblock %}
