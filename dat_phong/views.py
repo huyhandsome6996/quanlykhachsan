@@ -103,3 +103,12 @@ def them_dich_vu(request, dat_phong_id):
         'danh_sach_dich_vu': danh_sach_dich_vu
     }
     return render(request, 'dat_phong/them_dich_vu.html', context)
+
+def danh_sach_dat_phong(request):
+    danh_sach = DatPhong.objects.select_related('phong') \
+        .order_by('-dang_o', '-ngay_nhan')
+
+    context = {
+        'danh_sach': danh_sach
+    }
+    return render(request, 'dat_phong/danh_sach_dat_phong.html', context)

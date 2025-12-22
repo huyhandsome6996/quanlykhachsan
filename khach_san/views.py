@@ -55,3 +55,6 @@ def check_out(request, ma_phong):
     return render(request, 'khach_san/xac_nhan_check_out.html', {
         'phong': phong
     })
+
+
+
