@@ -4,7 +4,7 @@ from khach_san.models import Phong
 
 from django.db import models
 from khach_san.models import Phong
-
+from django.db.models import Max
 
 class DatPhong(models.Model):
     LOAI_KHACH_CHOICES = [
@@ -14,6 +14,15 @@ class DatPhong(models.Model):
         ('agoda', 'Agoda'),
         ('traveloka', 'Traveloka'),
     ]
+    ma_khach = models.CharField(
+    max_length=10,
+    unique=True,
+    editable=False,
+    null=True,
+    blank=True,
+    verbose_name="Mã khách"
+)
+
 
     phong = models.ForeignKey(
         Phong,
@@ -47,8 +56,24 @@ class DatPhong(models.Model):
         verbose_name="Đang ở"
     )
 
+    def save(self, *args, **kwargs):
+        if not self.ma_khach:
+            max_code = DatPhong.objects.aggregate(
+                max_code=Max('ma_khach')
+            )['max_code']
+
+            if max_code:
+                number = int(max_code.replace('KH', '')) + 1
+            else:
+                number = 1
+
+            self.ma_khach = f"KH{number:02d}"
+
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.phong.ma_phong} - {self.ten_khach}"
+        return f"{self.ma_khach} - {self.ten_khach}"
+    
 
 #nguyên 5
 class DichVu(models.Model):
