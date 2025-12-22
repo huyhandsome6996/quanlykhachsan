@@ -1,9 +1,13 @@
-from django.shortcuts import render, redirect, get_list_or_404
-from khach_san.models import Phong
-from .models import DatPhong
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 
+from khach_san.models import Phong
+from .models import DatPhong, SuDungDichVu
 
+
+# =========================
+# TẠO ĐẶT PHÒNG
+# =========================
 def tao_dat_phong(request):
     phong_trong = Phong.objects.filter(trang_thai='trong')
 
@@ -13,9 +17,9 @@ def tao_dat_phong(request):
         loai_khach = request.POST.get('loai_khach')
         ngay_nhan = request.POST.get('ngay_nhan')
 
-        phong = Phong.objects.get(id=phong_id)
+        phong = get_object_or_404(Phong, id=phong_id)
 
-        # Tạo đặt phòng
+        # tạo đơn đặt phòng
         DatPhong.objects.create(
             phong=phong,
             ten_khach=ten_khach,
@@ -24,7 +28,7 @@ def tao_dat_phong(request):
             dang_o=True
         )
 
-        # Cập nhật trạng thái phòng
+        # cập nhật trạng thái phòng
         phong.trang_thai = 'dang_thue'
         phong.save()
 
@@ -35,32 +39,57 @@ def tao_dat_phong(request):
     }
     return render(request, 'dat_phong/tao_dat_phong.html', context)
 
-from .models import SuDungDichVu #nguyên 5
-def check_out(request, dat_phong_id):
-    dat_phong = get_object_or_404(DatPhong, id=dat_phong_id, dang_o=True)
 
+# =========================
+# CHECK-OUT + TÍNH TIỀN
+# =========================
+def check_out(request, dat_phong_id):
+    dat_phong = get_object_or_404(
+        DatPhong,
+        id=dat_phong_id,
+        dang_o=True
+    )
+
+    # ngày trả
     ngay_tra = timezone.now().date()
+
+    # số đêm
     so_dem = (ngay_tra - dat_phong.ngay_nhan).days
     if so_dem <= 0:
         so_dem = 1
 
+    # tiền phòng
     gia_mot_dem = dat_phong.phong.loai_phong.gia_mot_dem
-    tong_dich_vu = sum(dv.thanh_tien() for dv in SuDungDichVu.objects.filter(dat_phong=dat_phong)) #nguyên 5
-    tong_tien = so_dem * gia_mot_dem + tong_dich_vu #nguyên 5: cộng thêm tổng dịch vụ sử dụng
-###############################################################
+    tien_phong = so_dem * gia_mot_dem
 
+    # tiền dịch vụ
+    danh_sach_dv = SuDungDichVu.objects.filter(dat_phong=dat_phong)
+    tong_dich_vu = sum(dv.thanh_tien() for dv in danh_sach_dv)
 
-   
+    # tổng tiền
+    tong_tien = tien_phong + tong_dich_vu
+
+    # ================= POST: xác nhận check-out =================
     if request.method == 'POST':
-        # cập nhật đơn đặt phòng
         dat_phong.ngay_tra = ngay_tra
         dat_phong.dang_o = False
         dat_phong.save()
 
-        # cập nhật phòng
         phong = dat_phong.phong
         phong.trang_thai = 'trong'
         phong.save()
 
         return redirect('bao_cao:trang_chu')
 
+    # ================= GET: hiển thị trang check-out =================
+    context = {
+        'dat_phong': dat_phong,
+        'so_dem': so_dem,
+        'gia_mot_dem': gia_mot_dem,
+        'tien_phong': tien_phong,
+        'danh_sach_dv': danh_sach_dv,
+        'tong_dich_vu': tong_dich_vu,
+        'tong_tien': tong_tien,
+    }
+
+    return render(request, 'dat_phong/checkout.html', context)

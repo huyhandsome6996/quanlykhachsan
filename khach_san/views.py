@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Phong
-
+from dat_phong.models import DatPhong
 
 def danh_sach_phong(request):
     danh_sach_phong = Phong.objects.select_related('loai_phong').all()
@@ -11,9 +11,18 @@ def danh_sach_phong(request):
 
 def chi_tiet_phong(request, ma_phong):
     phong = get_object_or_404(Phong, ma_phong=ma_phong)
-    return render(request, 'khach_san/chi_tiet_phong.html', {
-        'phong': phong
-    })
+
+    dat_phong_hien_tai = DatPhong.objects.filter(
+        phong=phong,
+        dang_o=True
+    ).first()
+
+    context = {
+        'phong': phong,
+        'dat_phong_hien_tai': dat_phong_hien_tai
+    }
+
+    return render(request, 'khach_san/chi_tiet_phong.html', context)
 
 def check_in(request, ma_phong):
     phong = get_object_or_404(Phong, ma_phong=ma_phong)
