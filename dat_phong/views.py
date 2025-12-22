@@ -19,6 +19,7 @@ def tao_dat_phong(request):
         
 
         phong = get_object_or_404(Phong, id=phong_id)
+        ngay_tra_du_kien = request.POST.get('ngay_tra_du_kien')
 
         # tạo đơn đặt phòng
         DatPhong.objects.create(
@@ -26,6 +27,7 @@ def tao_dat_phong(request):
             ten_khach=ten_khach,
             loai_khach=loai_khach,
             ngay_nhan=ngay_nhan,
+            ngay_tra_du_kien=ngay_tra_du_kien,
             dang_o=True
         )
 
@@ -46,6 +48,7 @@ def tao_dat_phong(request):
 # =========================
 def check_out(request, dat_phong_id):
     dat_phong = get_object_or_404(DatPhong, id=dat_phong_id, dang_o=True)
+    
 
     ngay_tra = timezone.now().date()
     so_dem = (ngay_tra - dat_phong.ngay_nhan).days
