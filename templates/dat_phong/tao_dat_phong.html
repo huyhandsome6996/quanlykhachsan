@@ -4,43 +4,74 @@
 {% block page_title %}Tạo đặt phòng{% endblock %}
 
 {% block content %}
-<form method="post" class="card shadow-sm p-4" style="max-width: 600px">
-  {% csrf_token %}
 
-  <div class="mb-3">
-    <label class="form-label">Phòng</label>
-    <select name="phong" class="form-select" required>
-      {% for phong in phong_trong %}
-        <option value="{{ phong.id }}">
-          Phòng {{ phong.ma_phong }} – {{ phong.loai_phong.ten_loai }}
-        </option>
-      {% endfor %}
-    </select>
+<div class="card shadow-sm p-4" style="max-width: 600px">
+  
+  <!-- Thông báo -->
+  <div class="alert alert-info">
+    Mã khách sẽ được hệ thống tự động tạo sau khi đặt phòng.
   </div>
 
-  <div class="mb-3">
-    <label class="form-label">Tên khách</label>
-    <input type="text" name="ten_khach" class="form-control" required>
-  </div>
+  <form method="post" autocomplete="off">
+    {% csrf_token %}
 
-  <div class="mb-3">
-    <label class="form-label">Loại khách</label>
-    <select name="loai_khach" class="form-select">
-      <option value="vang_lai">Vãng lai</option>
-      <option value="tour">Khách tour đoàn</option>
-      <option value="booking">Booking</option>
-      <option value="agoda">Agoda</option>
-      <option value="traveloka">Traveloka</option>
-    </select>
-  </div>
+    <!-- Chọn phòng -->
+    <div class="mb-3">
+      <label class="form-label">Phòng</label>
+      <select name="phong" class="form-select" required>
+        {% for phong in phong_trong %}
+          <option value="{{ phong.id }}">
+            Phòng {{ phong.ma_phong }} – {{ phong.loai_phong.ten_loai }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
 
-  <div class="mb-3">
-    <label class="form-label">Ngày nhận phòng</label>
-    <input type="date" name="ngay_nhan" class="form-control" required>
-  </div>
+    <!-- Tên khách -->
+    <div class="mb-3">
+      <label class="form-label">Tên khách</label>
+      <input
+        type="text"
+        name="ten_khach"
+        class="form-control"
+        placeholder="Nhập tên khách"
+        required
+        autocomplete="off"
+      >
+    </div>
 
-  <button class="btn btn-primary">
-    Xác nhận đặt phòng
-  </button>
-</form>
+    <!-- Loại khách -->
+    <div class="mb-3">
+      <label class="form-label">Loại khách</label>
+      <select name="loai_khach" class="form-select" required>
+        <option value="vang_lai">Vãng lai</option>
+        <option value="tour">Khách tour đoàn</option>
+        <option value="booking">Booking</option>
+        <option value="agoda">Agoda</option>
+        <option value="traveloka">Traveloka</option>
+      </select>
+    </div>
+
+    <!-- Ngày nhận phòng -->
+    <div class="mb-3">
+      <label class="form-label">Ngày nhận phòng</label>
+      <input
+        type="date"
+        name="ngay_nhan"
+        class="form-control"
+        required
+        autocomplete="off"
+      >
+    </div>
+
+    <!-- Nút submit -->
+    <div class="text-end">
+      <button type="submit" class="btn btn-primary">
+        Xác nhận đặt phòng
+      </button>
+    </div>
+
+  </form>
+</div>
+
 {% endblock %}

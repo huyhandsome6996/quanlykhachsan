@@ -30,10 +30,19 @@
   </a>
 <!--sửa lại nút quay lại trang chủ-->
 
-<a href="{% url 'dat_phong:them_dich_vu' dat_phong_hien_tai.id %}"
-   class="btn btn-warning">
-    Thêm dịch vụ
-</a>
+{% if dat_phong_hien_tai %}
+    <a
+        href="{% url 'dat_phong:them_dich_vu' dat_phong_hien_tai.id %}"
+        class="btn btn-warning"
+    >
+        Thêm dịch vụ
+    </a>
+{% else %}
+    <div class="alert alert-secondary mt-3">
+        Phòng hiện tại chưa có khách.
+    </div>
+{% endif %}
+
 
 
 

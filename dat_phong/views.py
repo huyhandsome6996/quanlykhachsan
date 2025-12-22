@@ -16,6 +16,7 @@ def tao_dat_phong(request):
         ten_khach = request.POST.get('ten_khach')
         loai_khach = request.POST.get('loai_khach')
         ngay_nhan = request.POST.get('ngay_nhan')
+        
 
         phong = get_object_or_404(Phong, id=phong_id)
 
