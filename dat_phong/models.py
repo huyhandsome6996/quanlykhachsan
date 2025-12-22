@@ -1,10 +1,7 @@
 from django.db import models
-from khach_san.models import Phong
-
-
-from django.db import models
-from khach_san.models import Phong
 from django.db.models import Max
+from khach_san.models import Phong
+
 
 class DatPhong(models.Model):
     LOAI_KHACH_CHOICES = [
@@ -14,15 +11,15 @@ class DatPhong(models.Model):
         ('agoda', 'Agoda'),
         ('traveloka', 'Traveloka'),
     ]
-    ma_khach = models.CharField(
-    max_length=10,
-    unique=True,
-    editable=False,
-    null=True,
-    blank=True,
-    verbose_name="Mã khách"
-)
 
+    ma_khach = models.CharField(
+        max_length=10,
+        unique=True,
+        editable=False,
+        null=True,
+        blank=True,
+        verbose_name="Mã khách"
+    )
 
     phong = models.ForeignKey(
         Phong,
@@ -43,6 +40,10 @@ class DatPhong(models.Model):
 
     ngay_nhan = models.DateField(
         verbose_name="Ngày nhận phòng"
+    )
+
+    ngay_tra_du_kien = models.DateField(
+        verbose_name="Ngày trả dự kiến"
     )
 
     ngay_tra = models.DateField(
@@ -73,9 +74,11 @@ class DatPhong(models.Model):
 
     def __str__(self):
         return f"{self.ma_khach} - {self.ten_khach}"
-    
 
-#nguyên 5
+    class Meta:
+        ordering = ['-dang_o', '-ngay_nhan']
+
+
 class DichVu(models.Model):
     ten_dich_vu = models.CharField(max_length=100)
     gia = models.PositiveIntegerField()
@@ -84,7 +87,7 @@ class DichVu(models.Model):
     def __str__(self):
         return self.ten_dich_vu
 
-#nguyên 5
+
 class SuDungDichVu(models.Model):
     dat_phong = models.ForeignKey(DatPhong, on_delete=models.CASCADE)
     dich_vu = models.ForeignKey(DichVu, on_delete=models.PROTECT)

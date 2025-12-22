@@ -6,8 +6,7 @@
 {% block content %}
 
 <div class="card shadow-sm p-4" style="max-width: 600px">
-  
-  <!-- Thông báo -->
+
   <div class="alert alert-info">
     Mã khách sẽ được hệ thống tự động tạo sau khi đặt phòng.
   </div>
@@ -15,7 +14,6 @@
   <form method="post" autocomplete="off">
     {% csrf_token %}
 
-    <!-- Chọn phòng -->
     <div class="mb-3">
       <label class="form-label">Phòng</label>
       <select name="phong" class="form-select" required>
@@ -27,20 +25,11 @@
       </select>
     </div>
 
-    <!-- Tên khách -->
     <div class="mb-3">
       <label class="form-label">Tên khách</label>
-      <input
-        type="text"
-        name="ten_khach"
-        class="form-control"
-        placeholder="Nhập tên khách"
-        required
-        autocomplete="off"
-      >
+      <input type="text" name="ten_khach" class="form-control" required>
     </div>
 
-    <!-- Loại khách -->
     <div class="mb-3">
       <label class="form-label">Loại khách</label>
       <select name="loai_khach" class="form-select" required>
@@ -52,19 +41,16 @@
       </select>
     </div>
 
-    <!-- Ngày nhận phòng -->
     <div class="mb-3">
       <label class="form-label">Ngày nhận phòng</label>
-      <input
-        type="date"
-        name="ngay_nhan"
-        class="form-control"
-        required
-        autocomplete="off"
-      >
+      <input type="date" name="ngay_nhan" class="form-control" required>
     </div>
 
-    <!-- Nút submit -->
+    <div class="mb-3">
+      <label class="form-label">Ngày trả dự kiến</label>
+      <input type="date" name="ngay_tra_du_kien" class="form-control" required>
+    </div>
+
     <div class="text-end">
       <button type="submit" class="btn btn-primary">
         Xác nhận đặt phòng
