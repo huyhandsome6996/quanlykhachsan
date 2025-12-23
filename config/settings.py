@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,6 +42,8 @@ INSTALLED_APPS = [
     'dat_phong',
     'bao_cao',
 ]
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -69,6 +72,8 @@ TEMPLATES = [
         },
     },
 ]
+
+
 
 
 WSGI_APPLICATION = 'config.wsgi.application'
@@ -121,3 +126,38 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Quản lý khách sạn",
+    "site_header": "Spring View Garden SaPa",
+    "site_brand": "Hotel Admin",
+
+    "site_logo": "images/logo.png",
+    "login_logo": "images/logo.png",
+
+    "welcome_sign": "Chào mừng quản trị viên",
+
+    "show_sidebar": True,
+    "navigation_expanded": True,
+
+    "theme": "flatly",
+
+    "icons": {
+        "dat_phong.DatPhong": "fas fa-bed",
+        "dat_phong.DichVu": "fas fa-concierge-bell",
+        "dat_phong.SuDungDichVu": "fas fa-receipt",
+        "khach_san.Phong": "fas fa-door-open",
+        "khach_san.LoaiPhong": "fas fa-tags",
+    },
+
+    "topmenu_links": [
+        {
+            "name": "Trang người dùng",
+            "url": "/",
+            "new_window": False,   # ✅ ĐÚNG KEY
+        },
+    ],
+}
+
+SITE_URL = "/"
