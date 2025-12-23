@@ -22,6 +22,6 @@ urlpatterns = [
     path('', include('bao_cao.urls')),
     path('', include('khach_san.urls')),
     path('dat-phong/', include('dat_phong.urls')),
-
+   
 ]
 

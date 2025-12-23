@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'khach_san',
     'dat_phong',
     'bao_cao',
+
 ]
 
 

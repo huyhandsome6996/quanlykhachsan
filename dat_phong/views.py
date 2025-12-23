@@ -5,6 +5,7 @@ from khach_san.models import Phong
 from .models import DatPhong, SuDungDichVu, DichVu
 
 
+
 # =========================
 # TẠO ĐẶT PHÒNG
 # =========================
@@ -46,6 +47,7 @@ def tao_dat_phong(request):
 # =========================
 # CHECK-OUT + TÍNH TIỀN
 # =========================
+
 def check_out(request, dat_phong_id):
     dat_phong = get_object_or_404(DatPhong, id=dat_phong_id, dang_o=True)
     

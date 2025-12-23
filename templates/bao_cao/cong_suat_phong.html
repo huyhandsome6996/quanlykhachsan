@@ -1,0 +1,44 @@
+<!-- TÚ 3 -->
+
+
+{% extends "base.html" %}
+
+{% block page_title %}
+Báo cáo công suất phòng
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6>Tổng số phòng</h6>
+                <h2>{{ tong_phong }}</h2>
+            </div>
+        </div>
+    </div>
+
+
+
+<!--Tú 4-->
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6>Phòng đang có khách</h6>
+                <h2>{{ phong_dang_o }}</h2>
+            </div>
+        </div>
+    </div>
+
+    
+<!--TÚ 5-->
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6>Công suất phòng</h6>
+                <h2>{{ cong_suat }}%</h2>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
