@@ -101,3 +101,8 @@ def check_out(request, dat_phong_id):
 def them_dich_vu(request, dat_phong_id):
     dat_phong = get_object_or_404(DatPhong, id=dat_phong_id, dang_o=True)
     danh_sach_dich_vu = DichVu.objects.all()
+    if request.method == 'POST':
+        dich_vu_id = request.POST.get('dich_vu')
+        so_luong = int(request.POST.get('so_luong', 1))
+
+        dich_vu = get_object_or_404(DichVu, id=dich_vu_id)
