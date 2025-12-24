@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block page_title %}Hóa đơn thanh toán{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <h5>Hóa đơn</h5>
+    <p><strong>Khách:</strong> {{ hoa_don.dat_phong.ten_khach }}</p>
+    <p><strong>Phòng:</strong> {{ hoa_don.dat_phong.phong.ma_phong }}</p>
+
+    <hr>
+
+    <p>Tiền phòng: {{ hoa_don.tien_phong }} đ</p>
+    <p>Tiền dịch vụ: {{ hoa_don.tien_dich_vu }} đ</p>
+
+    <h4 class="text-danger">
+      Tổng thanh toán: {{ hoa_don.tong_tien }} đ
+    </h4>
+
+    {% if hoa_don.trang_thai == 'chua_tt' %}
+      <span class="badge bg-warning">Chưa thanh toán</span>
+    {% else %}
+      <span class="badge bg-success">Đã thanh toán</span>
+    {% endif %}
+  </div>
+</div>
+{% if hoa_don.trang_thai == 'chua_tt' %}
+  <a href="{% url 'hoa_don:thanh_toan' hoa_don.dat_phong.id %}"
+     class="btn btn-success mt-3">
+    Thanh toán
+  </a>
+{% endif %}
+
+{% endblock %}

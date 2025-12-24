@@ -31,8 +31,10 @@
                     —
                 {% endif %}
             </td>
+
+            
             <td>
-               {% if user.is_superuser %}
+    {% if user.is_superuser %}
         {% if dp.dang_o %}
             <a href="{% url 'dat_phong:check_out' dp.id %}"
                class="btn btn-sm btn-danger">
@@ -45,6 +47,7 @@
         <span class="text-muted">—</span>
     {% endif %}
 </td>
+
         </tr>
         {% empty %}
         <tr>

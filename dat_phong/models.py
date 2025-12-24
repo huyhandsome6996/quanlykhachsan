@@ -3,6 +3,7 @@ from django.db.models import Max
 from khach_san.models import Phong
 
 
+
 class DatPhong(models.Model):
     LOAI_KHACH_CHOICES = [
         ('vang_lai', 'Vãng lai'),

@@ -1,174 +1,463 @@
-{% load static %}
-
-<!DOCTYPE html>
-<html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>
+<html lang="vi" class="h-full">
+ <head>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  {% load static %} 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>
       {% block title %}
         Spring View Garden SaPa - Quản lý khách sạn
       {% endblock %}
-    </title>
-
-    <!-- CSS Bootstrap -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-
-    <!-- Bootstrap Icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
-    />
-
-    <style>
+    </title><!-- CSS Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"><!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"><!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
       body {
-        background: #f5f6fa;
+        box-sizing: border-box;
       }
 
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html, body {
+        height: 100%;
+        width: 100%;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+        overflow-x: hidden;
+      }
+
+      /* Sidebar Styles */
       .sidebar {
-        width: 260px;
-        height: 100vh;
+        width: 280px;
+        height: 100%;
         position: fixed;
         left: 0;
         top: 0;
-        background: #244f3d;
+        background: linear-gradient(180deg, #1a3a2e 0%, #244f3d 50%, #2d6149 100%);
         color: #ffffff;
-        padding-top: 70px;
+        padding: 0;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        overflow-y: auto;
+        overflow-x: hidden;
       }
 
-      .sidebar a {
-        color: #dfe6e9;
-        text-decoration: none;
+      .sidebar::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .sidebar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .sidebar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
+      }
+
+      .sidebar-header {
+        padding: 30px 20px 25px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar-logo {
+        font-size: 42px;
+        margin-bottom: 8px;
         display: block;
-        padding: 10px 20px;
+        animation: float 3s ease-in-out infinite;
       }
 
-      .sidebar a:hover,
-      .sidebar a.active {
-        background: rgba(255, 255, 255, 0.12);
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-5px); }
+      }
+
+      .sidebar-title {
+        font-size: 18px;
+        font-weight: 700;
         color: #ffffff;
+        margin-bottom: 4px;
+        letter-spacing: 0.3px;
+      }
+
+      .sidebar-subtitle {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 400;
+      }
+
+      .sidebar-menu {
+        padding: 20px 0;
+      }
+
+      .menu-section {
+        margin-bottom: 25px;
       }
 
       .nhom-menu {
-        padding: 6px 20px 2px;
+        padding: 8px 24px;
         font-size: 11px;
         text-transform: uppercase;
-        opacity: 0.7;
+        letter-spacing: 1.2px;
+        color: rgba(255, 255, 255, 0.5);
+        font-weight: 600;
+        margin-bottom: 5px;
       }
 
-      .main-content {
-        margin-left: 260px;
-        padding: 20px;
-        min-height: 100vh;
+      .sidebar a {
+        color: rgba(255, 255, 255, 0.85);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        padding: 12px 24px;
+        margin: 3px 12px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        font-size: 14.5px;
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
       }
 
+      .sidebar a::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 4px;
+        height: 100%;
+        background: #4ecca3;
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar a:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        transform: translateX(4px);
+      }
+
+      .sidebar a:hover::before {
+        transform: scaleY(1);
+      }
+
+      .sidebar a.active {
+        background: linear-gradient(90deg, rgba(78, 204, 163, 0.25) 0%, rgba(78, 204, 163, 0.1) 100%);
+        color: #ffffff;
+        font-weight: 600;
+      }
+
+      .sidebar a.active::before {
+        transform: scaleY(1);
+      }
+
+      .sidebar a i {
+        margin-right: 14px;
+        font-size: 18px;
+        width: 24px;
+        text-align: center;
+      }
+
+      /* Topbar Styles */
       .topbar {
-        height: 60px;
+        height: 70px;
         background: #ffffff;
-        border-bottom: 1px solid #dddddd;
+        border-bottom: 1px solid #e5e7eb;
         position: fixed;
         top: 0;
-        left: 260px;
+        left: 280px;
         right: 0;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 20px;
-        z-index: 1000;
+        padding: 0 32px;
+        z-index: 999;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       }
-    </style>
 
-    {% block head %}{% endblock %}
-  </head>
+      .topbar-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1f2937;
+      }
 
-  <body>
-    {% with view_name=request.resolver_match.view_name %}
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <div class="text-center mb-3">
-        <strong>🌿 Spring View Garden SaPa</strong>
-        <div style="font-size: 12px">Hệ thống quản lý nội bộ</div>
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .topbar-user {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 16px;
+        background: #f9fafb;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+      }
+
+      .topbar-user:hover {
+        background: #f3f4f6;
+        border-color: #d1d5db;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .user-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #244f3d 0%, #4ecca3 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 16px;
+        box-shadow: 0 2px 8px rgba(36, 79, 61, 0.3);
+      }
+
+      .user-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .user-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1f2937;
+        line-height: 1.2;
+      }
+
+      .user-role {
+        font-size: 12px;
+        color: #6b7280;
+        line-height: 1.2;
+      }
+
+      .notification-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .notification-btn:hover {
+        background: #f3f4f6;
+        border-color: #d1d5db;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .notification-btn i {
+        font-size: 20px;
+        color: #6b7280;
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 8px;
+        height: 8px;
+        background: #ef4444;
+        border-radius: 50%;
+        border: 2px solid #ffffff;
+      }
+
+      /* Main Content */
+      .main-content {
+        margin-left: 280px;
+        margin-top: 70px;
+        padding: 32px;
+        min-height: calc(100% - 70px);
+        width: calc(100% - 280px);
+      }
+
+      /* Mobile Menu Button */
+      .mobile-menu-btn {
+        display: none;
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .mobile-menu-btn:hover {
+        background: #f3f4f6;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 260px;
+        }
+
+        .topbar {
+          left: 260px;
+        }
+
+        .main-content {
+          margin-left: 260px;
+          width: calc(100% - 260px);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+          transition: transform 0.3s ease;
+        }
+
+        .sidebar.show {
+          transform: translateX(0);
+        }
+
+        .topbar {
+          left: 0;
+        }
+
+        .main-content {
+          margin-left: 0;
+          width: 100%;
+          padding: 20px;
+        }
+
+        .topbar-title {
+          font-size: 18px;
+        }
+
+        .user-info {
+          display: none;
+        }
+
+        .mobile-menu-btn {
+          display: flex;
+        }
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 5px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+    </style> {% block head %}{% endblock %}   {% with view_name=request.resolver_match.view_name %} <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+   <div class="sidebar-header">
+  <img
+    src="{% static 'images/logo3.png' %}"
+    alt="Logo Spring View Garden SaPa"
+    class="sidebar-logo-img"
+  />
+
+  <div class="sidebar-title">
+    Spring View Garden SaPa
+  </div>
+  <div class="sidebar-subtitle">
+    Hệ thống quản lý nội bộ
+  </div>
+</div>
+
+   <nav class="sidebar-menu">
+    <div class="menu-section">
+     <div class="nhom-menu">
+      Trang chủ
+     </div><a href="{% url 'bao_cao:trang_chu' %}" class="{% if view_name == 'bao_cao:trang_chu' %}active{% endif %}"> <i class="bi bi-house-door"></i> <span>Bảng điều khiển</span> </a>
+    </div>
+    <div class="menu-section">
+     <div class="nhom-menu">
+      Đặt phòng
+     </div> {% if user.is_superuser %} <a href="{% url 'dat_phong:tao_dat_phong' %}" class="{% if view_name == 'dat_phong:tao_dat_phong' %}active{% endif %}"> <i class="bi bi-journal-plus"></i> <span>Tạo đặt phòng</span> </a> {% endif %} {% if user.is_superuser %} <a href="{% url 'dat_phong:danh_sach_dat_phong' %}" class="{% if view_name == 'dat_phong:danh_sach_dat_phong' %}active{% endif %}"> <i class="bi bi-journal-text"></i> <span>Danh sách đặt phòng</span> </a> {% endif %} {% if user.is_superuser %} <a href="{% url 'bao_cao:cong_suat_phong' %}" class="{% if view_name == 'bao_cao:cong_suat_phong' %}active{% endif %}"> <i class="bi bi-bar-chart"></i> <span>Công suất phòng</span> </a> {% endif %}
+    </div>
+    <div class="menu-section">
+     <div class="nhom-menu">
+      Hệ thống
+     </div><a href="/admin/"> <i class="bi bi-gear"></i> <span>Đăng nhập hệ thống</span> </a>
+    </div>
+   </nav>
+  </aside> {% endwith %} <!-- Topbar -->
+  <header class="topbar">
+   <div style="display: flex; align-items: center; gap: 16px;"><button class="mobile-menu-btn" onclick="toggleSidebar()"> <i class="bi bi-list" style="font-size: 22px; color: #1f2937;"></i> </button>
+    <h1 class="topbar-title">{% block page_title %}Quản lý khách sạn{% endblock %}</h1>
+   </div>
+   <div class="topbar-right"><button class="notification-btn"> <i class="bi bi-bell"></i> <span class="notification-badge"></span> </button>
+    <div class="topbar-user">
+     <div class="user-avatar">
+      {% if user.is_authenticated %} {{ user.username|first|upper }} {% else %} ? {% endif %}
+     </div>
+     <div class="user-info">
+      <div class="user-name">
+       {% if user.is_authenticated %} {{ user.username }} {% else %} Khách {% endif %}
       </div>
-
-      <div class="nhom-menu">Trang chủ</div>
-      <a
-        href="{% url 'bao_cao:trang_chu' %}"
-        class="{% if view_name == 'bao_cao:trang_chu' %}active{% endif %}"
-      >
-        <i class="bi bi-house"></i> Bảng điều khiển
-      </a>
-
-      <div class="nhom-menu">Đặt phòng</div>
-
-{% if user.is_superuser %}
-      <a href="{% url 'dat_phong:tao_dat_phong' %}">
-        <i class="bi bi-journal-plus"></i> Tạo đặt phòng
-      </a>
-      {% endif %}
-
-      {% if user.is_superuser %}
-      <a href="{% url 'dat_phong:danh_sach_dat_phong' %}">
-        <i class="bi bi-journal-text"></i> Danh sách đặt phòng
-      </a>
-      {% endif %}
-
-
-<!--nút báo cáo công suất phòng....Tú 6-->
-{% if user.is_superuser %}
-      <a href="{% url 'bao_cao:cong_suat_phong' %}">
-<i class="bi bi-bar-chart"></i>
-        Công suất phòng
-      </a>
-      {% endif %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      <div class="nhom-menu">Hệ thống</div>
-      {% if user.is_superuser %}
-      <a href="/admin/">
-        <i class="bi bi-gear"></i> Đăng Nhập Hệ Thống
-      </a>
-      {% else %}
-      <a href="/admin/">
-        <i class="bi bi-gear"></i> Đăng Nhập Hệ Thống
-      </a>
-      {% endif %}
-    </div>
-    {% endwith %}
-
-    <!-- Topbar -->
-    <div class="topbar">
-      <strong>{% block page_title %}Quản lý khách sạn{% endblock %}</strong>
-      <div>
-        {% if user.is_authenticated %}
-          Xin chào {{ user.username }}
-        {% else %}
-          Chưa đăng nhập
-        {% endif %}
+      <div class="user-role">
+       {% if user.is_superuser %} Quản trị viên {% elif user.is_authenticated %} Nhân viên {% else %} Chưa đăng nhập {% endif %}
       </div>
+     </div><i class="bi bi-chevron-down" style="color: #9ca3af; font-size: 14px;"></i>
     </div>
+   </div>
+  </header><!-- Content -->
+  <main class="main-content">
+   {% block content %}{% endblock %}
+  </main><!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+      function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('show');
+      }
 
-    <!-- Content -->
-    <div class="main-content" style="margin-top: 80px">
-      {% block content %}{% endblock %}
-    </div>
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const menuBtn = document.querySelector('.mobile-menu-btn');
 
-    <!-- JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    {% block scripts %}{% endblock %}
-  </body>
+        if (window.innerWidth <= 768) {
+          if (!sidebar.contains(event.target) && menuBtn && !menuBtn.contains(event.target)) {
+            sidebar.classList.remove('show');
+          }
+        }
+      });
+    </script> {% block scripts %}{% endblock %}
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b295c4661b9043d',t:'MTc2NjUwODY1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
