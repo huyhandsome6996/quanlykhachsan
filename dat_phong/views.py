@@ -106,10 +106,9 @@ def them_dich_vu(request, dat_phong_id):
         so_luong = int(request.POST.get('so_luong', 1))
 
         dich_vu = get_object_or_404(DichVu, id=dich_vu_id)
-    SuDungDichVu.objects.create(
+        SuDungDichVu.objects.create(
             dat_phong=dat_phong,
             dich_vu=dich_vu,
             so_luong=so_luong
         )
-
-    return redirect('khach_san:chi_tiet_phong', ma_phong=dat_phong.phong.ma_phong)
+        return redirect('khach_san:chi_tiet_phong', ma_phong=dat_phong.phong.ma_phong)
