@@ -32,22 +32,19 @@
                 {% endif %}
             </td>
             <td>
-                {% if dp.dang_o %}
-                    <span class="badge bg-success">Đang ở</span>
-                {% else %}
-                    <span class="badge bg-secondary">Đã trả phòng</span>
-                {% endif %}
-            </td>
-            <td>
-                {% if dp.dang_o %}
-                    <a href="{% url 'dat_phong:check_out' dp.id %}"
-                       class="btn btn-sm btn-danger">
-                        Check-out
-                    </a>
-                {% else %}
-                    <span class="text-muted">—</span>
-                {% endif %}
-            </td>
+               {% if user.is_superuser %}
+        {% if dp.dang_o %}
+            <a href="{% url 'dat_phong:check_out' dp.id %}"
+               class="btn btn-sm btn-danger">
+                Check-out
+            </a>
+        {% else %}
+            <span class="text-muted">—</span>
+        {% endif %}
+    {% else %}
+        <span class="text-muted">—</span>
+    {% endif %}
+</td>
         </tr>
         {% empty %}
         <tr>
