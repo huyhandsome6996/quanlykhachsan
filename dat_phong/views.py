@@ -54,3 +54,10 @@ def check_out(request, dat_phong_id):
         id=dat_phong_id,
         dang_o=True
     )
+    # ====== TÍNH TIỀN ======
+    ngay_tra = timezone.now().date()
+    so_dem = (ngay_tra - dat_phong.ngay_nhan).days
+    if so_dem <= 0:
+        so_dem = 1
+
+    gia_mot_dem = dat_phong.phong.loai_phong.gia_mot_dem
