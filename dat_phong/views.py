@@ -112,3 +112,8 @@ def them_dich_vu(request, dat_phong_id):
             so_luong=so_luong
         )
         return redirect('khach_san:chi_tiet_phong', ma_phong=dat_phong.phong.ma_phong)
+    context = {
+        'dat_phong': dat_phong,
+        'danh_sach_dich_vu': danh_sach_dich_vu
+    }
+    return render(request, 'dat_phong/them_dich_vu.html', context)
