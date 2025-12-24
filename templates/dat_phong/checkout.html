@@ -1,100 +1,337 @@
-{% extends "base.html" %}
+<html>
+ <head>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  {% extends "base.html" %} {% block title %} Check-out &amp; Tính tiền {% endblock %} {% block page_title %} <i class="bi bi-box-arrow-right me-2"></i>Check-out &amp; Tính tiền {% endblock %} {% block head %} 
+  <style>
+  /* Info Card */
+  .info-section {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f3f4f6;
+    margin-bottom: 24px;
+  }
 
-{% block title %}
-Check-out & Tính tiền
-{% endblock %}
+  .info-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f3f4f6;
+  }
 
-{% block page_title %}
-Check-out & Tính tiền
-{% endblock %}
+  .info-section-header i {
+    font-size: 24px;
+    color: #244f3d;
+  }
 
-{% block content %}
+  .info-section-header h5 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
 
-<div class="card mb-4">
-  <div class="card-header">
-    <h5 class="mb-0">Thông tin phòng</h5>
-  </div>
-  <div class="card-body">
-    <p><strong>Mã phòng:</strong> {{ dat_phong.phong.ma_phong }}</p>
-    <p><strong>Loại phòng:</strong> {{ dat_phong.phong.loai_phong.ten_loai }}</p>
-    <p><strong>Giá / đêm:</strong> {{ dat_phong.phong.loai_phong.gia_mot_dem }} đ</p>
-    <p><strong>Khách:</strong> {{ dat_phong.ten_khach }}</p>
-    <p><strong>Ngày nhận:</strong> {{ dat_phong.ngay_nhan }}</p>
-    <p><strong>Ngày trả:</strong> {{ dat_phong.ngay_tra|default:"Hôm nay" }}</p>
-    <p><strong>Số đêm:</strong> {{ so_dem }}</p>
-  </div>
-</div>
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #f3f4f6;
+  }
 
-<div class="card mb-4">
-  <div class="card-header">
-    <h5 class="mb-0">Chi phí phòng</h5>
-  </div>
-  <div class="card-body">
-    <p>
-      {{ so_dem }} đêm × {{ dat_phong.phong.loai_phong.gia_mot_dem }} đ
-      = <strong>{{ tien_phong }} đ</strong>
-    </p>
-  </div>
-</div>
+  .info-row:last-child {
+    border-bottom: none;
+  }
 
-<div class="card mb-4">
-  <div class="card-header">
-    <h5 class="mb-0">Dịch vụ đã sử dụng</h5>
-  </div>
-  <div class="card-body">
-    {% if ds_dich_vu %}
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Tên dịch vụ</th>
-            <th>Đơn giá</th>
-            <th>Số lượng</th>
-            <th>Thành tiền</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for dv in ds_dich_vu %}
-          <tr>
-            <td>{{ dv.dich_vu.ten_dich_vu }}</td>
-            <td>{{ dv.dich_vu.gia }} đ</td>
-            <td>{{ dv.so_luong }}</td>
-            <td>{{ dv.thanh_tien }} đ</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      <p class="text-end">
-        <strong>Tổng tiền dịch vụ: {{ tien_dich_vu }} đ</strong>
-      </p>
-    {% else %}
-      <p>Không có dịch vụ nào được sử dụng.</p>
-    {% endif %}
-  </div>
-</div>
+  .info-label {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+  }
 
-<div class="card mb-4 border-danger">
-  <div class="card-header bg-danger text-white">
-    <h5 class="mb-0">Tổng thanh toán</h5>
-  </div>
-  <div class="card-body">
-    <h4 class="text-danger">
-      Tổng tiền cần thanh toán: {{ tong_tien }} đ
-    </h4>
-  </div>
-</div>
+  .info-value {
+    font-size: 14px;
+    color: #1f2937;
+    font-weight: 600;
+    text-align: right;
+  }
 
-<form method="post">
-  {% csrf_token %}
-  <div class="d-flex gap-2">
-    <button type="submit" class="btn btn-danger">
-      Xác nhận Check-out
-    </button>
+  /* Price Calculation */
+  .price-calc {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 8px;
+  }
 
-    <a href="{% url 'khach_san:chi_tiet_phong' dat_phong.phong.ma_phong %}"
-       class="btn btn-secondary">
-      Quay lại
-    </a>
-  </div>
-</form>
+  .price-calc-text {
+    font-size: 15px;
+    color: #4b5563;
+    margin: 0;
+  }
 
-{% endblock %}
+  .price-calc-result {
+    font-size: 20px;
+    font-weight: 700;
+    color: #244f3d;
+    margin-top: 8px;
+  }
+
+  /* Service Table */
+  .service-table {
+    margin-top: 16px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+  }
+
+  .service-table thead {
+    background: #f9fafb;
+  }
+
+  .service-table th {
+    font-size: 13px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 14px 16px;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  .service-table td {
+    font-size: 14px;
+    color: #1f2937;
+    padding: 14px 16px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .service-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .service-table tbody tr:hover {
+    background: #f9fafb;
+  }
+
+  .service-total {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 16px;
+    text-align: right;
+  }
+
+  .service-total-text {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+
+  /* Empty State */
+  .empty-service {
+    text-align: center;
+    padding: 32px;
+    color: #9ca3af;
+  }
+
+  .empty-service i {
+    font-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+
+  .empty-service p {
+    font-size: 14px;
+    margin: 0;
+  }
+
+  /* Total Card */
+  .total-card {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
+    margin-bottom: 32px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .total-card::before {
+    content: '💰';
+    position: absolute;
+    font-size: 120px;
+    right: -10px;
+    bottom: -20px;
+    opacity: 0.1;
+  }
+
+  .total-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .total-card-header i {
+    font-size: 28px;
+  }
+
+  .total-card-header h5 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .total-amount {
+    font-size: 42px;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn-checkout {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-checkout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
+    color: white;
+  }
+
+  .btn-back {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #6b7280;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-back:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+    color: #1f2937;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    .action-buttons {
+      flex-direction: column;
+    }
+
+    .btn-checkout,
+    .btn-back {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style> {% endblock %} {% block content %} <!-- Thông tin phòng -->
+  <div class="info-section">
+   <div class="info-section-header"><i class="bi bi-door-open"></i>
+    <h5>Thông tin phòng</h5>
+   </div>
+   <div class="info-row"><span class="info-label">Mã phòng</span> <span class="info-value">{{ dat_phong.phong.ma_phong }}</span>
+   </div>
+   <div class="info-row"><span class="info-label">Loại phòng</span> <span class="info-value">{{ dat_phong.phong.loai_phong.ten_loai }}</span>
+   </div>
+   <div class="info-row"><span class="info-label">Giá / đêm</span> <span class="info-value">{{ dat_phong.phong.loai_phong.gia_mot_dem }} đ</span>
+   </div>
+   <div class="info-row"><span class="info-label">Khách hàng</span> <span class="info-value">{{ dat_phong.ten_khach }}</span>
+   </div>
+   <div class="info-row"><span class="info-label">Ngày nhận phòng</span> <span class="info-value">{{ dat_phong.ngay_nhan }}</span>
+   </div>
+   <div class="info-row"><span class="info-label">Ngày trả phòng</span> <span class="info-value">{{ dat_phong.ngay_tra|default:"Hôm nay" }}</span>
+   </div>
+   <div class="info-row"><span class="info-label">Số đêm</span> <span class="info-value">{{ so_dem }} đêm</span>
+   </div>
+  </div><!-- Chi phí phòng -->
+  <div class="info-section">
+   <div class="info-section-header"><i class="bi bi-calculator"></i>
+    <h5>Chi phí phòng</h5>
+   </div>
+   <div class="price-calc">
+    <p class="price-calc-text">{{ so_dem }} đêm × {{ dat_phong.phong.loai_phong.gia_mot_dem }} đ</p>
+    <div class="price-calc-result">
+     = {{ tien_phong }} đ
+    </div>
+   </div>
+  </div><!-- Dịch vụ đã sử dụng -->
+  <div class="info-section">
+   <div class="info-section-header"><i class="bi bi-shop"></i>
+    <h5>Dịch vụ đã sử dụng</h5>
+   </div> {% if ds_dich_vu %} 
+   <table class="table service-table mb-0">
+    <thead>
+     <tr>
+      <th>Tên dịch vụ</th>
+      <th style="text-align: right;">Đơn giá</th>
+      <th style="text-align: center;">Số lượng</th>
+      <th style="text-align: right;">Thành tiền</th>
+     </tr>
+    </thead>
+    <tbody>
+     {% for dv in ds_dich_vu %} 
+     <tr>
+      <td>{{ dv.dich_vu.ten_dich_vu }}</td>
+      <td style="text-align: right;">{{ dv.dich_vu.gia }} đ</td>
+      <td style="text-align: center;">{{ dv.so_luong }}</td>
+      <td style="text-align: right; font-weight: 600;">{{ dv.thanh_tien }} đ</td>
+     </tr> {% endfor %}
+    </tbody>
+   </table>
+   <div class="service-total">
+    <p class="service-total-text">Tổng tiền dịch vụ: {{ tien_dich_vu }} đ</p>
+   </div> {% else %} 
+   <div class="empty-service"><i class="bi bi-inbox"></i>
+    <p>Không có dịch vụ nào được sử dụng</p>
+   </div> {% endif %}
+  </div><!-- Tổng thanh toán -->
+  <div class="total-card">
+   <div class="total-card-header"><i class="bi bi-cash-stack"></i>
+    <h5>Tổng thanh toán</h5>
+   </div>
+   <div class="total-amount">
+    {{ tong_tien }} đ
+   </div>
+  </div><!-- Action Buttons -->
+  <form method="post">
+   {% csrf_token %} 
+   <div class="action-buttons"><button type="submit" class="btn-checkout"> <i class="bi bi-check-circle"></i> Xác nhận Check-out </button> <a href="{% url 'khach_san:chi_tiet_phong' dat_phong.phong.ma_phong %}" class="btn-back"> <i class="bi bi-arrow-left"></i> Quay lại </a>
+   </div>
+  </form> {% endblock %}
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b3086d6f14fb42b',t:'MTc2NjU4Mzc5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
