@@ -103,16 +103,17 @@
 
       <div class="nhom-menu">Đặt phòng</div>
 
+{% if user.is_superuser %}
+      <a href="{% url 'dat_phong:tao_dat_phong' %}">
+        <i class="bi bi-journal-plus"></i> Tạo đặt phòng
+      </a>
+      {% endif %}
 
-      <!--thêm nút tao đặt phòng-->
-      <a href="{% url 'dat_phong:tao_dat_phong' %}"><i class="bi bi-journal-plus"></i> Tạo đặt phòng</a>
-
-
-
-      <a href="{% url 'dat_phong:danh_sach_dat_phong' %}"><i class="bi bi-journal-text"></i> Danh sách đặt phòng</a>
-
-
-
+      {% if user.is_superuser %}
+      <a href="{% url 'dat_phong:danh_sach_dat_phong' %}">
+        <i class="bi bi-journal-text"></i> Danh sách đặt phòng
+      </a>
+      {% endif %}
 
 
 <!--nút báo cáo công suất phòng....Tú 6-->
