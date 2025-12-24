@@ -1,62 +1,291 @@
-{% extends 'base.html' %}
-{% block content %}
+<html>
+ <head>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  {% extends 'base.html' %} {% block page_title %} <i class="bi bi-journal-text me-2"></i>Danh sách đặt phòng {% endblock %} {% block head %} 
+  <style>
+  /* Table Container */
+  .table-container {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f3f4f6;
+    overflow: hidden;
+  }
 
-<h3 class="mb-4">Danh sách đặt phòng</h3>
+  .table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f3f4f6;
+  }
 
-<table class="table table-bordered table-hover align-middle">
-    <thead class="table-dark">
-        <tr>
-            <th>#</th>
-            <th>Phòng</th>
-            <th>Tên khách</th>
-            <th>Loại khách</th>
-            <th>Ngày nhận</th>
-            <th>Ngày trả</th>
-            <th>Trạng thái</th>
-            <th>Thao tác</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for dp in danh_sach %}
-        <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ dp.phong.ma_phong }}</td>
-            <td>{{ dp.ten_khach }}</td>
-            <td>{{ dp.loai_khach }}</td>
-            <td>{{ dp.ngay_nhan|date:"d/m/Y" }}</td>
-            <td>
-                {% if dp.ngay_tra %}
-                    {{ dp.ngay_tra|date:"d/m/Y" }}
-                {% else %}
-                    —
-                {% endif %}
-            </td>
+  .table-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 
-            
-            <td>
-    {% if user.is_superuser %}
-        {% if dp.dang_o %}
-            <a href="{% url 'dat_phong:check_out' dp.id %}"
-               class="btn btn-sm btn-danger">
-                Check-out
-            </a>
-        {% else %}
-            <span class="text-muted">—</span>
-        {% endif %}
-    {% else %}
-        <span class="text-muted">—</span>
-    {% endif %}
-</td>
+  .table-title i {
+    font-size: 24px;
+    color: #244f3d;
+  }
 
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="8" class="text-center text-muted">
-                Chưa có đơn đặt phòng
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+  .table-title h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
 
-{% endblock %}
+  .table-count {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6b7280;
+  }
+
+  /* Custom Table */
+  .booking-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 16px;
+  }
+
+  .booking-table thead {
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+  }
+
+  .booking-table thead th {
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 16px 18px;
+    text-align: left;
+    border: none;
+  }
+
+  .booking-table thead th:first-child {
+    border-top-left-radius: 12px;
+    text-align: center;
+  }
+
+  .booking-table thead th:last-child {
+    border-top-right-radius: 12px;
+    text-align: center;
+  }
+
+  .booking-table tbody tr {
+    background: white;
+    transition: all 0.2s ease;
+  }
+
+  .booking-table tbody tr:hover {
+    background: #f9fafb;
+    transform: scale(1.01);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .booking-table tbody td {
+    font-size: 14px;
+    color: #1f2937;
+    padding: 16px 18px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .booking-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .booking-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 12px;
+  }
+
+  .booking-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 12px;
+  }
+
+  /* Cell Styles */
+  .cell-number {
+    text-align: center;
+    font-weight: 600;
+    color: #6b7280;
+  }
+
+  .cell-room {
+    font-weight: 700;
+    color: #244f3d;
+    font-size: 15px;
+  }
+
+  .cell-guest {
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  .cell-type {
+    color: #6b7280;
+  }
+
+  .cell-date {
+    font-family: 'Courier New', monospace;
+    color: #4b5563;
+    font-size: 13px;
+  }
+
+  .cell-status {
+    text-align: center;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+
+  .status-badge.active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+  }
+
+  .status-badge.completed {
+    background: #f3f4f6;
+    color: #6b7280;
+  }
+
+  /* Action Button */
+  .cell-action {
+    text-align: center;
+  }
+
+  .btn-checkout {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+
+  .btn-checkout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+    color: white;
+  }
+
+  .action-disabled {
+    color: #d1d5db;
+    font-size: 18px;
+  }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 64px 32px;
+  }
+
+  .empty-state i {
+    font-size: 72px;
+    color: #d1d5db;
+    margin-bottom: 20px;
+  }
+
+  .empty-state h5 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #6b7280;
+    margin-bottom: 8px;
+  }
+
+  .empty-state p {
+    font-size: 14px;
+    color: #9ca3af;
+    margin: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .table-container {
+      padding: 20px;
+      overflow-x: auto;
+    }
+
+    .booking-table {
+      min-width: 800px;
+    }
+
+    .table-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+  }
+</style> {% endblock %} {% block content %} 
+  <div class="table-container">
+   <div class="table-header">
+    <div class="table-title"><i class="bi bi-list-check"></i>
+     <h3>Danh sách đặt phòng</h3>
+    </div>
+    <div class="table-count"><i class="bi bi-receipt me-2"></i>{{ danh_sach|length }} đơn đặt
+    </div>
+   </div> {% if danh_sach %} 
+   <div style="overflow-x: auto;">
+    <table class="booking-table">
+     <thead>
+      <tr>
+       <th>#</th>
+       <th>Phòng</th>
+       <th>Tên khách</th>
+       <th>Loại khách</th>
+       <th>Ngày nhận</th>
+       <th>Ngày trả</th>
+       <th>Trạng thái</th>
+       <th>Thao tác</th>
+      </tr>
+     </thead>
+     <tbody>
+      {% for dp in danh_sach %} 
+      <tr>
+       <td class="cell-number">{{ forloop.counter }}</td>
+       <td class="cell-room"><i class="bi bi-door-open me-2"></i>{{ dp.phong.ma_phong }}</td>
+       <td class="cell-guest">{{ dp.ten_khach }}</td>
+       <td class="cell-type">{{ dp.loai_khach }}</td>
+       <td class="cell-date">{{ dp.ngay_nhan|date:"d/m/Y" }}</td>
+       <td class="cell-date">{% if dp.ngay_tra %} {{ dp.ngay_tra|date:"d/m/Y" }} {% else %} <span style="color: #d1d5db;">—</span> {% endif %}</td>
+       <td class="cell-status">{% if dp.dang_o %} <span class="status-badge active"> <i class="bi bi-circle-fill" style="font-size: 8px;"></i> Đang ở </span> {% else %} <span class="status-badge completed"> <i class="bi bi-check-circle" style="font-size: 12px;"></i> Hoàn thành </span> {% endif %}</td>
+       <td class="cell-action">{% if user.is_superuser %} {% if dp.dang_o %} <a href="{% url 'dat_phong:check_out' dp.id %}" class="btn-checkout"> <i class="bi bi-box-arrow-right"></i> Check-out </a> {% else %} <span class="action-disabled">—</span> {% endif %} {% else %} <span class="action-disabled">—</span> {% endif %}</td>
+      </tr> {% endfor %}
+     </tbody>
+    </table>
+   </div> {% else %} 
+   <div class="empty-state"><i class="bi bi-inbox"></i>
+    <h5>Chưa có đơn đặt phòng</h5>
+    <p>Danh sách đặt phòng sẽ được hiển thị tại đây</p>
+   </div> {% endif %}
+  </div> {% endblock %}
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b308cdff713b42b',t:'MTc2NjU4NDA0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
