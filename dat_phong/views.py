@@ -65,3 +65,14 @@ def check_out(request, dat_phong_id):
     tong_dich_vu = sum(dv.thanh_tien for dv in ds_dich_vu)
     tien_phong = so_dem * gia_mot_dem
     tong_tien = tien_phong + tong_dich_vu
+    # ====== KHI XÁC NHẬN CHECK-OUT ======
+    if request.method == 'POST':
+        # 1. Cập nhật đặt phòng
+        dat_phong.ngay_tra = ngay_tra
+        dat_phong.dang_o = False
+        dat_phong.save()
+
+        # 2. Cập nhật phòng
+        phong = dat_phong.phong
+        phong.trang_thai = 'trong'
+        phong.save()
