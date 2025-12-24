@@ -117,11 +117,12 @@
 
 
 <!--nút báo cáo công suất phòng....Tú 6-->
+{% if user.is_superuser %}
       <a href="{% url 'bao_cao:cong_suat_phong' %}">
-    <i class="bi bi-bar-chart"></i>
-    Công suất phòng
-</a>
-
+<i class="bi bi-bar-chart"></i>
+        Công suất phòng
+      </a>
+      {% endif %}
 
 
 
@@ -137,7 +138,15 @@
 
 
       <div class="nhom-menu">Hệ thống</div>
-      <a href="/admin/"><i class="bi bi-gear"></i> Trang Admin</a>
+      {% if user.is_superuser %}
+      <a href="/admin/">
+        <i class="bi bi-gear"></i> Đăng Nhập Hệ Thống
+      </a>
+      {% else %}
+      <a href="/admin/">
+        <i class="bi bi-gear"></i> Đăng Nhập Hệ Thống
+      </a>
+      {% endif %}
     </div>
     {% endwith %}
 
