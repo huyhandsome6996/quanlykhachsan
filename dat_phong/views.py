@@ -4,11 +4,12 @@ from django.utils import timezone
 from khach_san.models import Phong
 from .models import DatPhong, SuDungDichVu, DichVu
 from hoa_don.models import HoaDon
-
+from django.contrib.admin.views.decorators import staff_member_required
 
 # =========================
 # TẠO ĐẶT PHÒNG
 # =========================
+@staff_member_required
 def tao_dat_phong(request):
     phong_trong = Phong.objects.filter(trang_thai='trong')
 
@@ -47,13 +48,14 @@ def tao_dat_phong(request):
 # =========================
 # CHECK-OUT + TÍNH TIỀN
 # =========================
-
+@staff_member_required
 def check_out(request, dat_phong_id):
     dat_phong = get_object_or_404(
         DatPhong,
         id=dat_phong_id,
         dang_o=True
     )
+
     # ====== TÍNH TIỀN ======
     ngay_tra = timezone.now().date()
     so_dem = (ngay_tra - dat_phong.ngay_nhan).days
@@ -61,10 +63,13 @@ def check_out(request, dat_phong_id):
         so_dem = 1
 
     gia_mot_dem = dat_phong.phong.loai_phong.gia_mot_dem
+
     ds_dich_vu = SuDungDichVu.objects.filter(dat_phong=dat_phong)
     tong_dich_vu = sum(dv.thanh_tien for dv in ds_dich_vu)
+
     tien_phong = so_dem * gia_mot_dem
     tong_tien = tien_phong + tong_dich_vu
+
     # ====== KHI XÁC NHẬN CHECK-OUT ======
     if request.method == 'POST':
         # 1. Cập nhật đặt phòng
@@ -76,6 +81,7 @@ def check_out(request, dat_phong_id):
         phong = dat_phong.phong
         phong.trang_thai = 'trong'
         phong.save()
+
         # 3. TẠO HÓA ĐƠN (QUAN TRỌNG)
         HoaDon.objects.get_or_create(
             dat_phong=dat_phong,
@@ -86,18 +92,21 @@ def check_out(request, dat_phong_id):
                 'trang_thai': 'chua_tt'
             }
         )
+
         # 4. CHỈ redirect SAU KHI ĐÃ TẠO HÓA ĐƠN
         return redirect('hoa_don:chi_tiet', dat_phong.id)
 
     # ====== GET: HIỂN THỊ TRANG CHECKOUT ======
     return render(request, 'dat_phong/checkout.html', {
         'dat_phong': dat_phong,
-        'so_dem': so_dem, 'tien_phong': tien_phong, 'ds_dich_vu': ds_dich_vu,
-'tien_dich_vu': tong_dich_vu,
+        'so_dem': so_dem,
+        'tien_phong': tien_phong,
+        'ds_dich_vu': ds_dich_vu,
+        'tien_dich_vu': tong_dich_vu,
         'tong_tien': tong_tien,
     })
 
-
+@staff_member_required
 def them_dich_vu(request, dat_phong_id):
     dat_phong = get_object_or_404(DatPhong, id=dat_phong_id, dang_o=True)
     danh_sach_dich_vu = DichVu.objects.all()
