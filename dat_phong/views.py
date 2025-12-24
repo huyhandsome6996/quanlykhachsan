@@ -122,3 +122,7 @@ def them_dich_vu(request, dat_phong_id):
 def danh_sach_dat_phong(request):
     danh_sach = DatPhong.objects.select_related('phong') \
         .order_by('-dang_o', '-ngay_nhan')
+    context = {
+        'danh_sach': danh_sach
+    }
+
