@@ -86,3 +86,13 @@ def check_out(request, dat_phong_id):
                 'trang_thai': 'chua_tt'
             }
         )
+        # 4. CHỈ redirect SAU KHI ĐÃ TẠO HÓA ĐƠN
+        return redirect('hoa_don:chi_tiet', dat_phong.id)
+
+    # ====== GET: HIỂN THỊ TRANG CHECKOUT ======
+    return render(request, 'dat_phong/checkout.html', {
+        'dat_phong': dat_phong,
+        'so_dem': so_dem, 'tien_phong': tien_phong, 'ds_dich_vu': ds_dich_vu,
+'tien_dich_vu': tong_dich_vu,
+        'tong_tien': tong_tien,
+    })
