@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.humanize',
     "jazzmin",
     'django.contrib.admin',
     'django.contrib.auth',
@@ -152,15 +153,28 @@ JAZZMIN_SETTINGS = {
         "dat_phong.SuDungDichVu": "fas fa-receipt",
         "khach_san.Phong": "fas fa-door-open",
         "khach_san.LoaiPhong": "fas fa-tags",
+        "hoa_don.HoaDon": "fas fa-file-invoice-dollar",
     },
 
     "topmenu_links": [
         {
             "name": "Trang người dùng",
             "url": "/",
-            "new_window": False,   # ✅ ĐÚNG KEY
+            "new_window": False,
         },
     ],
+
+    # ✅ PHẦN QUAN TRỌNG NHẤT
+    "custom_links": {
+        "Hoa_Don": [
+            {
+                "name": "📊 Báo cáo doanh thu",
+                "url": "/admin/hoa_don/hoadon/bao-cao-doanh-thu/",
+                "icon": "fas fa-chart-line",
+            }
+        ]
+    },
 }
 
 SITE_URL = "/"
+

@@ -1,0 +1,57 @@
+{% extends "admin/base_site.html" %}
+{% load humanize %}
+
+{% block content %}
+<h1>Báo cáo doanh thu</h1>
+
+<form method="get" style="margin-bottom: 20px;">
+    <fieldset style="padding: 10px; border: 1px solid #ccc;">
+        <legend><strong>Chọn khoảng thời gian</strong></legend>
+
+        <label>
+            Từ ngày:
+            <input type="date" name="start" value="{{ start }}">
+        </label>
+
+        &nbsp;&nbsp;
+
+        <label>
+            Đến ngày:
+            <input type="date" name="end" value="{{ end }}">
+        </label>
+
+        &nbsp;&nbsp;
+
+        <button type="submit" class="button default">
+            Xem báo cáo
+        </button>
+    </fieldset>
+</form>
+
+<hr>
+
+<div style="margin-top: 20px;">
+    <h2>Kết quả</h2>
+
+    <table class="admin-report-table" style="width: 50%; border-collapse: collapse;">
+        <tr>
+            <th style="text-align:left; padding:8px; border:1px solid #ddd;">
+                Tổng doanh thu
+            </th>
+            <td style="padding:8px; border:1px solid #ddd;">
+                {{ tong_tien|intcomma }} VNĐ
+            </td>
+        </tr>
+
+        <tr>
+            <th style="text-align:left; padding:8px; border:1px solid #ddd;">
+                Doanh thu trung bình / hóa đơn
+            </th>
+            <td style="padding:8px; border:1px solid #ddd;">
+                {{ trung_binh|intcomma }} VNĐ
+            </td>
+        </tr>
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "admin/change_list.html" %}
+{% load humanize %}
+
+{% block content %}
+
+{{ block.super }}
+
+<hr>
+
+<div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+    <h3>📊 Báo cáo doanh thu</h3>
+
+    <form method="get" style="margin-bottom: 15px;">
+        <label>Từ ngày:</label>
+        <input type="date" name="start" value="{{ start }}">
+
+        <label style="margin-left: 10px;">Đến ngày:</label>
+        <input type="date" name="end" value="{{ end }}">
+
+        <button class="button" style="margin-left: 10px;">
+            Xem báo cáo
+        </button>
+    </form>
+
+    <table class="table table-bordered" style="width: 400px;">
+        <tr>
+            <th>Tổng doanh thu</th>
+            <td><strong>{{ tong_doanh_thu|intcomma }} VNĐ</strong></td>
+        </tr>
+        <tr>
+            <th>Doanh thu trung bình</th>
+            <td>{{ doanh_thu_tb|intcomma }} VNĐ</td>
+        </tr>
+    </table>
+</div>
+
+{% endblock %}
