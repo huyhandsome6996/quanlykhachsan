@@ -1,102 +1,296 @@
-{% extends "base.html" %}
+<html>
+ <head>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  {% extends "base.html" %} {% block title %}Trang chủ - Spring View Garden SaPa{% endblock %} {% block page_title %}Trang chủ / Bảng điều khiển{% endblock %} {% block head %} 
+  <style>
+  /* Welcome Card */
+  .welcome-card {
+    background: linear-gradient(135deg, #244f3d 0%, #2d6149 100%);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+    color: white;
+    box-shadow: 0 8px 24px rgba(36, 79, 61, 0.3);
+    position: relative;
+    overflow: hidden;
+    border: none;
+  }
 
-{% block title %}Trang chủ - Spring View Garden SaPa{% endblock %}
-{% block page_title %}Trang chủ / Bảng điều khiển{% endblock %}
+  .welcome-card::before {
+    content: '🌿';
+    position: absolute;
+    font-size: 180px;
+    right: -20px;
+    bottom: -40px;
+    opacity: 0.1;
+  }
 
-{% block content %}
+  .welcome-card h4 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
 
-<!-- KHỐI CHÀO MỪNG -->
-<div class="card shadow-sm mb-4 border-0"
-     style="background: linear-gradient(135deg,#1f5f43,#2f8f68); color:white;">
-  <div class="card-body py-4">
-    <h4 class="fw-bold mb-1">
-      Xin chào {{ user.username }} 👋
-    </h4>
-    <p class="mb-0 opacity-75">
-      Chào mừng bạn đến với hệ thống quản lý khách sạn Spring View Garden SaPa
-    </p>
-  </div>
-</div>
+  .welcome-card p {
+    font-size: 16px;
+    opacity: 0.9;
+    margin: 0;
+  }
 
-<!-- THỐNG KÊ NHANH -->
-<div class="row g-3 mb-4">
-  <div class="col-md-6">
-    <div class="card shadow-sm h-100">
-      <div class="card-body text-center">
-        <div class="text-muted mb-1">Phòng trống</div>
-        <div class="fs-1 fw-bold text-success">
-          {{ so_phong_trong }}
-        </div>
-      </div>
+  /* Stats Cards */
+  .stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    border: 1px solid #f3f4f6;
+    height: 100%;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .stat-icon.green {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  }
+
+  .stat-icon.red {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+
+  .stat-value {
+    font-size: 40px;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  /* Room Cards */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .section-header h3 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+
+  .section-header i {
+    font-size: 24px;
+    color: #244f3d;
+  }
+
+  .room-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    border: 1px solid #f3f4f6;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .room-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: #e5e7eb;
+  }
+
+  .room-number {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 6px;
+  }
+
+  .room-type {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 18px;
+  }
+
+  .room-card .btn {
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #244f3d 0%, #2d6149 100%);
+    border: none;
+  }
+
+  .room-card .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(36, 79, 61, 0.4);
+  }
+
+  .room-status {
+    margin-top: 14px;
+  }
+
+  .room-status .badge {
+    padding: 8px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border-radius: 8px;
+  }
+
+  /* Note Card */
+  .note-card {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f3f4f6;
+    margin-top: 40px;
+  }
+
+  .note-card h5 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .note-card ul {
+    margin: 0;
+    padding-left: 24px;
+  }
+
+  .note-card li {
+    color: #4b5563;
+    margin-bottom: 10px;
+    line-height: 1.6;
+    font-size: 14.5px;
+  }
+
+  .note-card li:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Empty State */
+  .empty-state {
+    background: white;
+    border-radius: 16px;
+    padding: 48px 32px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f3f4f6;
+  }
+
+  .empty-state i {
+    font-size: 64px;
+    color: #d1d5db;
+    margin-bottom: 16px;
+  }
+
+  .empty-state p {
+    color: #6b7280;
+    font-size: 16px;
+    margin: 0;
+  }
+</style> {% endblock %} {% block content %} <!-- KHỐI CHÀO MỪNG -->
+  <div class="welcome-card">
+   <h4>Xin chào {{ user.username }} 👋</h4>
+   <p>Chào mừng bạn đến với hệ thống quản lý khách sạn Spring View Garden SaPa</p>
+  </div><!-- THỐNG KÊ NHANH -->
+  <div class="row g-4 mb-4">
+   <div class="col-md-6">
+    <div class="stat-card">
+     <div class="stat-icon green"><i class="bi bi-door-open" style="color: white;"></i>
+     </div>
+     <div class="stat-label">
+      Phòng trống
+     </div>
+     <div class="stat-value">
+      {{ so_phong_trong }}
+     </div>
     </div>
-  </div>
-
-  <div class="col-md-6">
-    <div class="card shadow-sm h-100">
-      <div class="card-body text-center">
-        <div class="text-muted mb-1">Phòng đang thuê</div>
-        <div class="fs-1 fw-bold text-danger">
-          {{ so_phong_dang_thue }}
-        </div>
-      </div>
+   </div>
+   <div class="col-md-6">
+    <div class="stat-card">
+     <div class="stat-icon red"><i class="bi bi-house-check" style="color: white;"></i>
+     </div>
+     <div class="stat-label">
+      Phòng đang thuê
+     </div>
+     <div class="stat-value">
+      {{ so_phong_dang_thue }}
+     </div>
     </div>
+   </div>
+  </div><!-- DANH SÁCH PHÒNG -->
+  <div class="section-header"><i class="bi bi-grid-3x3-gap"></i>
+   <h3>Danh sách phòng</h3>
   </div>
-</div>
-
-<!-- DANH SÁCH PHÒNG -->
-<h3 class="mb-3">Danh sách phòng</h3>
-
-<div class="row g-3">
-  {% for phong in danh_sach_phong %}
-  <div class="col-md-3">
-    <div class="card shadow-sm h-100">
-      <div class="card-body d-flex flex-column">
-        <h5 class="fw-bold">Phòng {{ phong.ma_phong }}</h5>
-        <p class="text-muted mb-2">{{ phong.loai_phong.ten_loai }}</p>
-
-        <!--thêm nút xem chi tiết phòng-->
-        <div class="mt-auto">
-          <a
-            href="{% url 'khach_san:chi_tiet_phong' phong.ma_phong %}"
-            class="btn btn-primary btn-sm w-100"
-          >
-            Xem chi tiết
-          </a>
-        </div>
-
-        <div class="mt-2">
-          {% if phong.trang_thai == 'trong' %}
-            <span class="badge bg-success">TRỐNG</span>
-          {% elif phong.trang_thai == 'dang_thue' %}
-            <span class="badge bg-danger">ĐANG THUÊ</span>
-          {% elif phong.trang_thai == 'dang_bao_tri' %}
-            <span class="badge bg-warning text-dark">ĐANG BẢO TRÌ</span>
-          {% endif %}
-        </div>
-      </div>
+  <div class="row g-4">
+   {% for phong in danh_sach_phong %} 
+   <div class="col-md-6 col-lg-4 col-xl-3">
+    <div class="room-card">
+     <div class="room-number">
+      Phòng {{ phong.ma_phong }}
+     </div>
+     <div class="room-type">
+      {{ phong.loai_phong.ten_loai }}
+     </div>
+     <div class="mt-auto"><a href="{% url 'khach_san:chi_tiet_phong' phong.ma_phong %}" class="btn btn-primary w-100"> <i class="bi bi-eye me-2"></i>Xem chi tiết </a>
+     </div>
+     <div class="room-status">
+      {% if phong.trang_thai == 'trong' %} <span class="badge bg-success"> <i class="bi bi-check-circle me-1"></i>TRỐNG </span> {% elif phong.trang_thai == 'dang_thue' %} <span class="badge bg-danger"> <i class="bi bi-lock me-1"></i>ĐANG THUÊ </span> {% elif phong.trang_thai == 'dang_bao_tri' %} <span class="badge bg-warning text-dark"> <i class="bi bi-tools me-1"></i>BẢO TRÌ </span> {% endif %}
+     </div>
     </div>
-  </div>
-  {% empty %}
-    <div class="col-12">
-      <div class="alert alert-info">
-        Chưa có phòng nào trong hệ thống.
-      </div>
+   </div> {% empty %} 
+   <div class="col-12">
+    <div class="empty-state"><i class="bi bi-inbox"></i>
+     <p>Chưa có phòng nào trong hệ thống.</p>
     </div>
-  {% endfor %}
-</div>
-
-<!-- KHỐI HƯỚNG DẪN / GHI CHÚ -->
-<div class="card shadow-sm mt-5">
-  <div class="card-body">
-    <h5 class="fw-bold mb-2">
-      📌 Ghi chú sử dụng hệ thống
-    </h5>
-    <ul class="mb-0">
-      <li>Kiểm tra trạng thái phòng trước khi tạo đặt phòng mới</li>
-      <li>Chỉ quản trị viên mới có quyền quản lý báo cáo & hệ thống</li>
-      <li>Dữ liệu được cập nhật theo thời gian thực</li>
-    </ul>
-  </div>
-</div>
-
-{% endblock %}
+   </div> {% endfor %}
+  </div><!-- KHỐI HƯỚNG DẪN / GHI CHÚ -->
+  <div class="note-card">
+   <h5><i class="bi bi-info-circle" style="color: #244f3d;"></i> Ghi chú sử dụng hệ thống</h5>
+   <ul>
+    <li>Kiểm tra trạng thái phòng trước khi tạo đặt phòng mới</li>
+    <li>Chỉ quản trị viên mới có quyền quản lý báo cáo &amp; hệ thống</li>
+    <li>Dữ liệu được cập nhật theo thời gian thực</li>
+   </ul>
+  </div> {% endblock %}
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b307872f7b4b42b',t:'MTc2NjU4MzIwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
