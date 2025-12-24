@@ -106,7 +106,7 @@ def check_out(request, dat_phong_id):
         'tong_tien': tong_tien,
     })
 
-
+@staff_member_required
 def them_dich_vu(request, dat_phong_id):
     dat_phong = get_object_or_404(DatPhong, id=dat_phong_id, dang_o=True)
     danh_sach_dich_vu = DichVu.objects.all()
