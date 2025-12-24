@@ -61,3 +61,7 @@ def check_out(request, dat_phong_id):
         so_dem = 1
 
     gia_mot_dem = dat_phong.phong.loai_phong.gia_mot_dem
+    ds_dich_vu = SuDungDichVu.objects.filter(dat_phong=dat_phong)
+    tong_dich_vu = sum(dv.thanh_tien for dv in ds_dich_vu)
+    tien_phong = so_dem * gia_mot_dem
+    tong_tien = tien_phong + tong_dich_vu
