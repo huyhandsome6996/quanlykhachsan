@@ -1,37 +1,360 @@
-{% extends "base.html" %}
-{% block content %}
+<html>
+ <head>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  {% extends "base.html" %} {% block page_title %} <i class="bi bi-plus-circle me-2"></i>Thêm dịch vụ {% endblock %} {% block head %} 
+  <style>
+  /* Form Container */
+  .service-form-container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
 
-<div class="container mt-4">
-    <h3>Thêm dịch vụ cho phòng {{ dat_phong.phong.ma_phong }}</h3>
+  .service-form-card {
+    background: white;
+    border-radius: 16px;
+    padding: 36px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f3f4f6;
+  }
 
-    <form method="post">
-        {% csrf_token %}
+  .service-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f3f4f6;
+  }
 
-        <div class="mb-3">
-            <label class="form-label">Chọn dịch vụ</label>
-            <select name="dich_vu" class="form-control" required>
-                {% for dv in danh_sach_dich_vu %}
-                    <option value="{{ dv.id }}">
-                        {{ dv.ten_dich_vu }} - {{ dv.gia }} đ / {{ dv.don_vi }}
-                    </option>
-                {% endfor %}
-            </select>
-        </div>
+  .service-form-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 
-        <div class="mb-3">
-            <label class="form-label">Số lượng</label>
-            <input type="number" name="so_luong" class="form-control" value="1" min="1" required>
-        </div>
+  .service-form-title i {
+    font-size: 28px;
+    color: #244f3d;
+  }
 
-        <button type="submit" class="btn btn-success">
-            ➕ Thêm dịch vụ
-        </button>
+  .service-form-title h4 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
 
-        <a href="{% url 'khach_san:chi_tiet_phong' dat_phong.phong.ma_phong %}"
-           class="btn btn-secondary">
-            ⬅ Quay lại
-        </a>
+  .room-badge {
+    background: linear-gradient(135deg, #244f3d 0%, #2d6149 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Info Card */
+  .guest-info-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 28px;
+  }
+
+  .guest-info-card h6 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+
+  .guest-info-card p {
+    font-size: 15px;
+    color: #1f2937;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  /* Form Groups */
+  .service-form-group {
+    margin-bottom: 24px;
+  }
+
+  .service-form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .service-form-group label i {
+    font-size: 16px;
+    color: #244f3d;
+  }
+
+  .required-star {
+    color: #ef4444;
+    margin-left: 4px;
+  }
+
+  /* Service Select */
+  .service-select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #1f2937;
+    transition: all 0.3s ease;
+    background: white;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M8 10.5l-4-4h8l-4 4z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+  }
+
+  .service-select:focus {
+    outline: none;
+    border-color: #244f3d;
+    box-shadow: 0 0 0 3px rgba(36, 79, 61, 0.1);
+  }
+
+  /* Quantity Input */
+  .quantity-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .quantity-btn {
+    width: 44px;
+    height: 44px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    background: white;
+    color: #374151;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .quantity-btn:hover {
+    border-color: #244f3d;
+    background: #f9fafb;
+    color: #244f3d;
+  }
+
+  .quantity-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .quantity-input:focus {
+    outline: none;
+    border-color: #244f3d;
+    box-shadow: 0 0 0 3px rgba(36, 79, 61, 0.1);
+  }
+
+  /* Preview Card */
+  .preview-card {
+    background: #f0fdf4;
+    border: 2px solid #86efac;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 28px;
+  }
+
+  .preview-card h6 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #16a34a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .preview-card p {
+    font-size: 14px;
+    color: #166534;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Action Buttons */
+  .service-form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 2px solid #f3f4f6;
+  }
+
+  .btn-add-service {
+    flex: 1;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .btn-add-service:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+  }
+
+  .btn-back-service {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #6b7280;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-back-service:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+    color: #1f2937;
+    transform: translateY(-2px);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .service-form-card {
+      padding: 24px;
+    }
+
+    .service-form-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .service-form-actions {
+      flex-direction: column;
+    }
+
+    .btn-add-service,
+    .btn-back-service {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style> {% endblock %} {% block content %} 
+  <div class="service-form-container">
+   <div class="service-form-card">
+    <div class="service-form-header">
+     <div class="service-form-title"><i class="bi bi-shop"></i>
+      <h4>Thêm dịch vụ</h4>
+     </div>
+     <div class="room-badge"><i class="bi bi-door-open"></i> Phòng {{ dat_phong.phong.ma_phong }}
+     </div>
+    </div>
+    <div class="guest-info-card">
+     <h6><i class="bi bi-person me-2"></i>Thông tin khách</h6>
+     <p>{{ dat_phong.ten_khach }}</p>
+    </div>
+    <form method="post" id="serviceForm">
+     {% csrf_token %} 
+     <div class="service-form-group"><label> <i class="bi bi-list-check"></i> Chọn dịch vụ <span class="required-star">*</span> </label> <select name="dich_vu" class="service-select" id="serviceSelect" required> {% for dv in danh_sach_dich_vu %} <option value="{{ dv.id }}" data-price="{{ dv.gia }}" data-unit="{{ dv.don_vi }}"> {{ dv.ten_dich_vu }} - {{ dv.gia }} đ / {{ dv.don_vi }} </option> {% endfor %} </select>
+     </div>
+     <div class="service-form-group"><label> <i class="bi bi-calculator"></i> Số lượng <span class="required-star">*</span> </label>
+      <div class="quantity-wrapper"><button type="button" class="quantity-btn" onclick="decreaseQuantity()">−</button> <input type="number" name="so_luong" id="quantityInput" class="quantity-input" value="1" min="1" required> <button type="button" class="quantity-btn" onclick="increaseQuantity()">+</button>
+      </div>
+     </div>
+     <div class="preview-card">
+      <h6><i class="bi bi-receipt"></i> Tạm tính</h6>
+      <p id="previewText">Vui lòng chọn dịch vụ và số lượng</p>
+     </div>
+     <div class="service-form-actions"><button type="submit" class="btn-add-service"> <i class="bi bi-plus-circle"></i> Thêm dịch vụ </button> <a href="{% url 'khach_san:chi_tiet_phong' dat_phong.phong.ma_phong %}" class="btn-back-service"> <i class="bi bi-arrow-left"></i> Quay lại </a>
+     </div>
     </form>
-</div>
+   </div>
+  </div>
+  <script>
+  function increaseQuantity() {
+    const input = document.getElementById('quantityInput');
+    input.value = parseInt(input.value) + 1;
+    updatePreview();
+  }
 
-{% endblock %}
+  function decreaseQuantity() {
+    const input = document.getElementById('quantityInput');
+    if (parseInt(input.value) > 1) {
+      input.value = parseInt(input.value) - 1;
+      updatePreview();
+    }
+  }
+
+  function updatePreview() {
+    const select = document.getElementById('serviceSelect');
+    const quantity = parseInt(document.getElementById('quantityInput').value);
+    const selectedOption = select.options[select.selectedIndex];
+    
+    if (selectedOption) {
+      const serviceName = selectedOption.text.split(' - ')[0];
+      const price = parseInt(selectedOption.dataset.price);
+      const unit = selectedOption.dataset.unit;
+      const total = price * quantity;
+      
+      document.getElementById('previewText').innerHTML = 
+        `<strong>${serviceName}</strong><br>` +
+        `${quantity} ${unit} × ${price.toLocaleString()} đ = <strong>${total.toLocaleString()} đ</strong>`;
+    }
+  }
+
+  // Update preview when service changes
+  document.getElementById('serviceSelect').addEventListener('change', updatePreview);
+  document.getElementById('quantityInput').addEventListener('input', updatePreview);
+
+  // Initialize preview on load
+  updatePreview();
+</script> {% endblock %}
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b3098bad5a1b42b',t:'MTc2NjU4NDUyOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
