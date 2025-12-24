@@ -96,3 +96,24 @@ def check_out(request, dat_phong_id):
 'tien_dich_vu': tong_dich_vu,
         'tong_tien': tong_tien,
     })
+
+
+def them_dich_vu(request, dat_phong_id):
+    dat_phong = get_object_or_404(DatPhong, id=dat_phong_id, dang_o=True)
+    danh_sach_dich_vu = DichVu.objects.all()
+    if request.method == 'POST':
+        dich_vu_id = request.POST.get('dich_vu')
+        so_luong = int(request.POST.get('so_luong', 1))
+
+        dich_vu = get_object_or_404(DichVu, id=dich_vu_id)
+        SuDungDichVu.objects.create(
+            dat_phong=dat_phong,
+            dich_vu=dich_vu,
+            so_luong=so_luong
+        )
+        return redirect('khach_san:chi_tiet_phong', ma_phong=dat_phong.phong.ma_phong)
+    context = {
+        'dat_phong': dat_phong,
+        'danh_sach_dich_vu': danh_sach_dich_vu
+    }
+    return render(request, 'dat_phong/them_dich_vu.html', context)
