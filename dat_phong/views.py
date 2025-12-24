@@ -76,3 +76,13 @@ def check_out(request, dat_phong_id):
         phong = dat_phong.phong
         phong.trang_thai = 'trong'
         phong.save()
+        # 3. TẠO HÓA ĐƠN (QUAN TRỌNG)
+        HoaDon.objects.get_or_create(
+            dat_phong=dat_phong,
+            defaults={
+                'tien_phong': tien_phong,
+                'tien_dich_vu': tong_dich_vu,
+                'tong_tien': tong_tien,
+                'trang_thai': 'chua_tt'
+            }
+        )
