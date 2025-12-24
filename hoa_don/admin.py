@@ -11,4 +11,6 @@ class HoaDonAdmin(admin.ModelAdmin):
         'trang_thai',
         'thoi_diem_tao'
     )
-    list_filter = ('trang_thai',) #
+    list_filter = ('trang_thai',)
+
+list_filter = ('trang_thai', 'thoi_diem_tao')

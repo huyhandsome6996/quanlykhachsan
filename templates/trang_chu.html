@@ -4,88 +4,99 @@
 {% block page_title %}Trang chủ / Bảng điều khiển{% endblock %}
 
 {% block content %}
-<div class="row g-3">
-  <div class="col-md-3">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <div class="text-muted">Phòng trống</div>
-        <div class="fs-3 fw-bold">{{ so_phong_trong }}</div>
+
+<!-- KHỐI CHÀO MỪNG -->
+<div class="card shadow-sm mb-4 border-0"
+     style="background: linear-gradient(135deg,#1f5f43,#2f8f68); color:white;">
+  <div class="card-body py-4">
+    <h4 class="fw-bold mb-1">
+      Xin chào {{ user.username }} 👋
+    </h4>
+    <p class="mb-0 opacity-75">
+      Chào mừng bạn đến với hệ thống quản lý khách sạn Spring View Garden SaPa
+    </p>
+  </div>
+</div>
+
+<!-- THỐNG KÊ NHANH -->
+<div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-body text-center">
+        <div class="text-muted mb-1">Phòng trống</div>
+        <div class="fs-1 fw-bold text-success">
+          {{ so_phong_trong }}
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="col-md-3">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <div class="text-muted">Phòng đang thuê</div>
-        <div class="fs-3 fw-bold">{{ so_phong_dang_thue }}</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-md-3">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <div class="text-muted">Doanh thu hôm nay</div>
-        <div class="fs-3 fw-bold">{{ doanh_thu_hom_nay }} đ</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-md-3">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <div class="text-muted">Đơn đặt phòng hôm nay</div>
-        <div class="fs-3 fw-bold">{{ don_dat_hom_nay }}</div>
+  <div class="col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-body text-center">
+        <div class="text-muted mb-1">Phòng đang thuê</div>
+        <div class="fs-1 fw-bold text-danger">
+          {{ so_phong_dang_thue }}
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<hr class="my-4" />
-
-<h3>Danh sách phòng</h3>
+<!-- DANH SÁCH PHÒNG -->
+<h3 class="mb-3">Danh sách phòng</h3>
 
 <div class="row g-3">
   {% for phong in danh_sach_phong %}
   <div class="col-md-3">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h5>Phòng {{ phong.ma_phong }}</h5>
-        <p class="text-muted">{{ phong.loai_phong.ten_loai }}
+    <div class="card shadow-sm h-100">
+      <div class="card-body d-flex flex-column">
+        <h5 class="fw-bold">Phòng {{ phong.ma_phong }}</h5>
+        <p class="text-muted mb-2">{{ phong.loai_phong.ten_loai }}</p>
 
+        <!--thêm nút xem chi tiết phòng-->
+        <div class="mt-auto">
+          <a
+            href="{% url 'khach_san:chi_tiet_phong' phong.ma_phong %}"
+            class="btn btn-primary btn-sm w-100"
+          >
+            Xem chi tiết
+          </a>
+        </div>
 
-
-<!--thêm nút xem chi tiết phòng-->
-          <div class="mt-auto">
-  <a
-    href="{% url 'khach_san:chi_tiet_phong' phong.ma_phong %}"
-    class="btn btn-primary btn-sm w-100"
-  >
-    Xem chi tiết
-  </a>
-</div>
-
-
-
-        </p>
-
-
-        
-        {% if phong.trang_thai == 'trong' %}
-          <span class="badge bg-success">TRỐNG</span>
-        {% elif phong.trang_thai == 'dang_thue' %}
-          <span class="badge bg-danger">ĐANG THUÊ</span>
-        {% elif phong.trang_thai == 'dang_bao_tri' %}
-          <span class="badge bg-warning text-dark">ĐANG BẢO TRÌ</span>
-        {% endif %}
+        <div class="mt-2">
+          {% if phong.trang_thai == 'trong' %}
+            <span class="badge bg-success">TRỐNG</span>
+          {% elif phong.trang_thai == 'dang_thue' %}
+            <span class="badge bg-danger">ĐANG THUÊ</span>
+          {% elif phong.trang_thai == 'dang_bao_tri' %}
+            <span class="badge bg-warning text-dark">ĐANG BẢO TRÌ</span>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
   {% empty %}
     <div class="col-12">
-      <div class="alert alert-info">Chưa có phòng nào.</div>
+      <div class="alert alert-info">
+        Chưa có phòng nào trong hệ thống.
+      </div>
     </div>
   {% endfor %}
 </div>
+
+<!-- KHỐI HƯỚNG DẪN / GHI CHÚ -->
+<div class="card shadow-sm mt-5">
+  <div class="card-body">
+    <h5 class="fw-bold mb-2">
+      📌 Ghi chú sử dụng hệ thống
+    </h5>
+    <ul class="mb-0">
+      <li>Kiểm tra trạng thái phòng trước khi tạo đặt phòng mới</li>
+      <li>Chỉ quản trị viên mới có quyền quản lý báo cáo & hệ thống</li>
+      <li>Dữ liệu được cập nhật theo thời gian thực</li>
+    </ul>
+  </div>
+</div>
+
 {% endblock %}

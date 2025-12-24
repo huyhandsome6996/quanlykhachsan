@@ -6,6 +6,9 @@ from .models import DatPhong, SuDungDichVu, DichVu
 from hoa_don.models import HoaDon
 from django.contrib.admin.views.decorators import staff_member_required
 
+
+
+
 # =========================
 # TẠO ĐẶT PHÒNG
 # =========================
@@ -48,6 +51,8 @@ def tao_dat_phong(request):
 # =========================
 # CHECK-OUT + TÍNH TIỀN
 # =========================
+
+
 @staff_member_required
 def check_out(request, dat_phong_id):
     dat_phong = get_object_or_404(
@@ -106,32 +111,38 @@ def check_out(request, dat_phong_id):
         'tong_tien': tong_tien,
     })
 
+
+
 @staff_member_required
 def them_dich_vu(request, dat_phong_id):
     dat_phong = get_object_or_404(DatPhong, id=dat_phong_id, dang_o=True)
     danh_sach_dich_vu = DichVu.objects.all()
+
     if request.method == 'POST':
         dich_vu_id = request.POST.get('dich_vu')
         so_luong = int(request.POST.get('so_luong', 1))
 
         dich_vu = get_object_or_404(DichVu, id=dich_vu_id)
+
         SuDungDichVu.objects.create(
             dat_phong=dat_phong,
             dich_vu=dich_vu,
             so_luong=so_luong
         )
+
         return redirect('khach_san:chi_tiet_phong', ma_phong=dat_phong.phong.ma_phong)
+
     context = {
         'dat_phong': dat_phong,
         'danh_sach_dich_vu': danh_sach_dich_vu
     }
     return render(request, 'dat_phong/them_dich_vu.html', context)
 
-
 def danh_sach_dat_phong(request):
     danh_sach = DatPhong.objects.select_related('phong') \
         .order_by('-dang_o', '-ngay_nhan')
+
     context = {
         'danh_sach': danh_sach
     }
-
+    return render(request, 'dat_phong/danh_sach_dat_phong.html', context)
