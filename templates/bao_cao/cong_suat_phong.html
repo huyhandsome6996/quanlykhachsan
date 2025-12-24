@@ -1,44 +1,170 @@
-<!-- TÚ 3 -->
+<html>
+ <head>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  {% extends "base.html" %} {% block page_title %} <i class="bi bi-bar-chart me-2"></i>Báo cáo công suất phòng {% endblock %} {% block head %} 
+  <style>
+  /* Report Stats Card */
+  .report-stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 32px 28px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    border: 1px solid #f3f4f6;
+    height: 100%;
+    text-align: center;
+  }
 
+  .report-stat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+  }
 
-{% extends "base.html" %}
+  .report-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 20px;
+  }
 
-{% block page_title %}
-Báo cáo công suất phòng
-{% endblock %}
+  .report-icon.blue {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+  }
 
-{% block content %}
-<div class="row">
-    <div class="col-md-4">
-        <div class="card text-center">
-            <div class="card-body">
-                <h6>Tổng số phòng</h6>
-                <h2>{{ tong_phong }}</h2>
-            </div>
-        </div>
+  .report-icon.green {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+  }
+
+  .report-icon.purple {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+  }
+
+  .report-label {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 14px;
+  }
+
+  .report-value {
+    font-size: 48px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+
+  .report-subtitle {
+    font-size: 13px;
+    color: #9ca3af;
+    margin: 0;
+  }
+
+  /* Progress Bar */
+  .capacity-progress {
+    width: 100%;
+    height: 12px;
+    background: #f3f4f6;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 16px;
+  }
+
+  .capacity-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 100%);
+    border-radius: 6px;
+    transition: width 0.6s ease;
+  }
+
+  /* Info Card */
+  .info-card {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f3f4f6;
+    margin-top: 32px;
+  }
+
+  .info-card h5 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .info-card p {
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.7;
+    font-size: 14.5px;
+  }
+</style> {% endblock %} {% block content %} <!-- TÚ 3 - Stats Cards -->
+  <div class="row g-4 mb-4">
+   <div class="col-md-4">
+    <div class="report-stat-card">
+     <div class="report-icon blue"><i class="bi bi-building"></i>
+     </div>
+     <div class="report-label">
+      Tổng số phòng
+     </div>
+     <div class="report-value">
+      {{ tong_phong }}
+     </div>
+     <p class="report-subtitle">phòng trong hệ thống</p>
     </div>
-
-
-
-<!--Tú 4-->
-    <div class="col-md-4">
-        <div class="card text-center">
-            <div class="card-body">
-                <h6>Phòng đang có khách</h6>
-                <h2>{{ phong_dang_o }}</h2>
-            </div>
-        </div>
+   </div><!-- TÚ 4 -->
+   <div class="col-md-4">
+    <div class="report-stat-card">
+     <div class="report-icon green"><i class="bi bi-people"></i>
+     </div>
+     <div class="report-label">
+      Phòng đang có khách
+     </div>
+     <div class="report-value">
+      {{ phong_dang_o }}
+     </div>
+     <p class="report-subtitle">phòng đã có người thuê</p>
     </div>
-
-    
-<!--TÚ 5-->
-    <div class="col-md-4">
-        <div class="card text-center">
-            <div class="card-body">
-                <h6>Công suất phòng</h6>
-                <h2>{{ cong_suat }}%</h2>
-            </div>
-        </div>
+   </div><!-- TÚ 5 -->
+   <div class="col-md-4">
+    <div class="report-stat-card">
+     <div class="report-icon purple"><i class="bi bi-graph-up-arrow"></i>
+     </div>
+     <div class="report-label">
+      Công suất phòng
+     </div>
+     <div class="report-value">
+      {{ cong_suat }}%
+     </div>
+     <p class="report-subtitle">tỷ lệ lấp đầy</p>
+     <div class="capacity-progress">
+      <div class="capacity-progress-bar" style="width: {{ cong_suat }}%;"></div>
+     </div>
     </div>
-</div>
-{% endblock %}
+   </div>
+  </div><!-- Info Card -->
+  <div class="info-card">
+   <h5><i class="bi bi-info-circle" style="color: #244f3d;"></i> Thông tin công suất</h5>
+   <p>Công suất phòng được tính dựa trên tỷ lệ phòng đang có khách so với tổng số phòng. Số liệu này giúp bạn theo dõi hiệu quả kinh doanh và đưa ra các quyết định điều chỉnh giá, khuyến mãi phù hợp để tối ưu hóa doanh thu.</p>
+  </div> {% endblock %}
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b307e786411b42b',t:'MTc2NjU4MzQ1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

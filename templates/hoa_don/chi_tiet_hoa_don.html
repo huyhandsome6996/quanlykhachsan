@@ -1,35 +1,406 @@
-{% extends "base.html" %}
+<html>
+ <head>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  {% extends "base.html" %} {% block page_title %} <i class="bi bi-receipt me-2"></i>Hóa đơn thanh toán {% endblock %} {% block head %} 
+  <style>
+  /* Invoice Container */
+  .invoice-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
 
-{% block page_title %}Hóa đơn thanh toán{% endblock %}
+  .invoice-card {
+    background: white;
+    border-radius: 16px;
+    padding: 48px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f3f4f6;
+    position: relative;
+  }
 
-{% block content %}
-<div class="card">
-  <div class="card-body">
-    <h5>Hóa đơn</h5>
-    <p><strong>Khách:</strong> {{ hoa_don.dat_phong.ten_khach }}</p>
-    <p><strong>Phòng:</strong> {{ hoa_don.dat_phong.phong.ma_phong }}</p>
+  /* Invoice Header */
+  .invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 3px solid #244f3d;
+  }
 
-    <hr>
+  .invoice-logo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
 
-    <p>Tiền phòng: {{ hoa_don.tien_phong }} đ</p>
-    <p>Tiền dịch vụ: {{ hoa_don.tien_dich_vu }} đ</p>
+  .invoice-logo-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #244f3d 0%, #2d6149 100%);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: white;
+  }
 
-    <h4 class="text-danger">
-      Tổng thanh toán: {{ hoa_don.tong_tien }} đ
-    </h4>
+  .invoice-logo-text h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 4px 0;
+  }
 
-    {% if hoa_don.trang_thai == 'chua_tt' %}
-      <span class="badge bg-warning">Chưa thanh toán</span>
-    {% else %}
-      <span class="badge bg-success">Đã thanh toán</span>
-    {% endif %}
-  </div>
-</div>
-{% if hoa_don.trang_thai == 'chua_tt' %}
-  <a href="{% url 'hoa_don:thanh_toan' hoa_don.dat_phong.id %}"
-     class="btn btn-success mt-3">
-    Thanh toán
-  </a>
-{% endif %}
+  .invoice-logo-text p {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+    font-weight: 500;
+  }
 
-{% endblock %}
+  .invoice-number {
+    text-align: right;
+  }
+
+  .invoice-number h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 8px 0;
+  }
+
+  .invoice-number p {
+    font-size: 24px;
+    font-weight: 700;
+    color: #244f3d;
+    margin: 0;
+  }
+
+  /* Customer Info */
+  .customer-info-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .customer-info-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .customer-info-card h5 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .customer-info-card h5 i {
+    font-size: 16px;
+    color: #244f3d;
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+  }
+
+  .info-label {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+  }
+
+  .info-value {
+    font-size: 14px;
+    color: #1f2937;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  /* Invoice Table */
+  .invoice-table {
+    margin-bottom: 32px;
+  }
+
+  .invoice-table h5 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .invoice-table h5 i {
+    font-size: 18px;
+    color: #244f3d;
+  }
+
+  .invoice-items {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .invoice-items table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .invoice-items thead {
+    background: #f9fafb;
+  }
+
+  .invoice-items th {
+    font-size: 13px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 14px 20px;
+    text-align: left;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  .invoice-items th:last-child {
+    text-align: right;
+  }
+
+  .invoice-items td {
+    font-size: 14px;
+    color: #1f2937;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .invoice-items tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .invoice-items td:last-child {
+    text-align: right;
+    font-weight: 600;
+  }
+
+  /* Total Section */
+  .invoice-total {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .invoice-total h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .invoice-total-amount {
+    font-size: 36px;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Status Badge */
+  .status-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+
+  .status-badge.unpaid {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  }
+
+  .status-badge.paid {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+
+  .status-badge i {
+    font-size: 18px;
+  }
+
+  /* Payment Button */
+  .payment-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .btn-payment {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 16px 48px;
+    font-size: 17px;
+    font-weight: 700;
+    color: white;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+
+  .btn-payment:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+    color: white;
+  }
+
+  .btn-payment i {
+    font-size: 20px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .invoice-card {
+      padding: 28px 20px;
+    }
+
+    .invoice-header {
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .invoice-number {
+      text-align: left;
+    }
+
+    .customer-info-section {
+      grid-template-columns: 1fr;
+    }
+
+    .invoice-total {
+      flex-direction: column;
+      text-align: center;
+      gap: 16px;
+    }
+
+    .invoice-total-amount {
+      font-size: 32px;
+    }
+  }
+
+  /* Print Styles */
+  @media print {
+    .btn-payment,
+    .status-section {
+      display: none;
+    }
+  }
+</style> {% endblock %} {% block content %} 
+  <div class="invoice-container">
+   <div class="invoice-card"><!-- Invoice Header -->
+    <div class="invoice-header">
+     <div class="invoice-logo">
+      <div class="invoice-logo-icon"><i class="bi bi-building"></i>
+      </div>
+      <div class="invoice-logo-text">
+       <h2>Hóa đơn thanh toán</h2>
+       <p>Khách sạn {{ hoa_don.dat_phong.phong.ma_phong }}</p>
+      </div>
+     </div>
+     <div class="invoice-number">
+      <h4>Mã hóa đơn</h4>
+      <p>#{{ hoa_don.id|stringformat:"05d" }}</p>
+     </div>
+    </div><!-- Customer Info -->
+    <div class="customer-info-section">
+     <div class="customer-info-card">
+      <h5><i class="bi bi-person"></i> Thông tin khách hàng</h5>
+      <div class="info-row"><span class="info-label">Tên khách:</span> <span class="info-value">{{ hoa_don.dat_phong.ten_khach }}</span>
+      </div>
+      <div class="info-row"><span class="info-label">Loại khách:</span> <span class="info-value">{{ hoa_don.dat_phong.loai_khach }}</span>
+      </div>
+     </div>
+     <div class="customer-info-card">
+      <h5><i class="bi bi-door-open"></i> Thông tin phòng</h5>
+      <div class="info-row"><span class="info-label">Mã phòng:</span> <span class="info-value">{{ hoa_don.dat_phong.phong.ma_phong }}</span>
+      </div>
+      <div class="info-row"><span class="info-label">Loại phòng:</span> <span class="info-value">{{ hoa_don.dat_phong.phong.loai_phong.ten_loai }}</span>
+      </div>
+     </div>
+    </div><!-- Invoice Items -->
+    <div class="invoice-table">
+     <h5><i class="bi bi-list-ul"></i> Chi tiết thanh toán</h5>
+     <div class="invoice-items">
+      <table>
+       <thead>
+        <tr>
+         <th>Khoản mục</th>
+         <th>Số tiền</th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td><strong>Tiền phòng</strong><br><small style="color: #6b7280;">Chi phí thuê phòng</small></td>
+         <td>{{ hoa_don.tien_phong|floatformat:0 }} đ</td>
+        </tr>
+        <tr>
+         <td><strong>Tiền dịch vụ</strong><br><small style="color: #6b7280;">Dịch vụ đã sử dụng</small></td>
+         <td>{{ hoa_don.tien_dich_vu|floatformat:0 }} đ</td>
+        </tr>
+       </tbody>
+      </table>
+     </div>
+    </div><!-- Total -->
+    <div class="invoice-total">
+     <h4><i class="bi bi-cash-stack"></i> Tổng thanh toán</h4>
+     <div class="invoice-total-amount">
+      {{ hoa_don.tong_tien|floatformat:0 }} đ
+     </div>
+    </div><!-- Status -->
+    <div class="status-section">
+     {% if hoa_don.trang_thai == 'chua_tt' %} <span class="status-badge unpaid"> <i class="bi bi-exclamation-circle"></i> Chưa thanh toán </span> {% else %} <span class="status-badge paid"> <i class="bi bi-check-circle"></i> Đã thanh toán </span> {% endif %}
+    </div><!-- Payment Action --> {% if hoa_don.trang_thai == 'chua_tt' %} 
+    <div class="payment-actions"><a href="{% url 'hoa_don:thanh_toan' hoa_don.dat_phong.id %}" class="btn-payment"> <i class="bi bi-credit-card"></i> Thanh toán ngay </a>
+    </div> {% endif %}
+   </div>
+  </div> {% endblock %}
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b30a9d7936f1075',t:'MTc2NjU4NTIzMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
