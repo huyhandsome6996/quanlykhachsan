@@ -466,3 +466,14 @@
 <script>
     const toggleBtn = document.getElementById('dark-mode-toggle');
     const body = document.body;
+
+    function setTheme(theme) {
+        if (theme === 'dark') {
+            body.classList.add('dark-mode');
+            if(toggleBtn) toggleBtn.innerHTML = '☀️ Mode Sáng';
+        } else {
+            body.classList.remove('dark-mode');
+            if(toggleBtn) toggleBtn.innerHTML = '🌙 Mode Tối';
+        }
+        localStorage.setItem('theme', theme);
+    }
