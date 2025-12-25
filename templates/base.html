@@ -515,7 +515,17 @@
     const btn  = document.getElementById('theme-toggle-fab');
     const icon = document.getElementById('theme-toggle-icon');
     const text = document.getElementById('theme-toggle-text');
-
+function applyTheme(isDark) {
+        if (isDark) {
+            body.classList.add('dark-mode');
+            icon.textContent = '☀️';
+            text.textContent = 'Sáng';
+        } else {
+            body.classList.remove('dark-mode');
+            icon.textContent = '🌙';
+            text.textContent = 'Tối';
+        }
+    }
  </html>
 
 
