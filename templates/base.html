@@ -460,4 +460,88 @@
       });
     </script> {% block scripts %}{% endblock %}
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b295c4661b9043d',t:'MTc2NjUwODY1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>
+
+
+
+
+<!-- ================= THEME TOGGLE (LIGHT / DARK) ================= -->
+
+
+<style>
+    /* Dark mode core */
+    body.dark-mode {
+        background-color: #121212;
+        color: #e0e0e0;
+        transition: background-color .3s, color .3s;
+    }
+
+ body.dark-mode .card,
+    body.dark-mode .navbar,
+    body.dark-mode .dropdown-menu,
+    body.dark-mode .table,
+    body.dark-mode .modal-content {
+        background-color: #1e1e1e !important;
+        color: #ffffff !important;
+    }
+
+ body.dark-mode a {
+        color: #90caf9;
+    }
+/* Floating toggle button */
+    #theme-toggle-fab {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 9999;
+        border-radius: 20px;
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+</style>
+<button id="theme-toggle-fab" class="btn btn-outline-secondary d-flex align-items-center">
+    <span id="theme-toggle-icon">🌙</span>
+    <span id="theme-toggle-text" class="ms-1">Tối</span>
+</button>
+
+<script>
+/*
+ * Theme Toggle – DÁN LÀ CHẠY
+ * - Không phụ thuộc HTML sẵn có
+ * - Lưu LocalStorage
+ * - Tự nhận theme hệ thống
+ */ 
+ (function () {
+    const body = document.body;
+    const btn  = document.getElementById('theme-toggle-fab');
+    const icon = document.getElementById('theme-toggle-icon');
+    const text = document.getElementById('theme-toggle-text');
+function applyTheme(isDark) {
+        if (isDark) {
+            body.classList.add('dark-mode');
+            icon.textContent = '☀️';
+            text.textContent = 'Sáng';
+        } else {
+            body.classList.remove('dark-mode');
+            icon.textContent = '🌙';
+            text.textContent = 'Tối';
+        }
+    }
+     // Ưu tiên LocalStorage → hệ thống
+    const savedTheme = localStorage.getItem('user-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    applyTheme(savedTheme === 'dark' || (!savedTheme && prefersDark));
+      btn.addEventListener('click', function () {
+        const isDark = !body.classList.contains('dark-mode');
+        applyTheme(isDark);
+        localStorage.setItem('user-theme', isDark ? 'dark' : 'light');
+    });
+
+})();
+</script>
+
+<!-- ================= END THEME TOGGLE ================= -->
+ </html>
+
+
+
