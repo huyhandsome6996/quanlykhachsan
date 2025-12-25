@@ -173,84 +173,72 @@
   </body>
 </html>
 
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý khách sạn</title>
+    <title>{% block title %}App{% endblock %}</title>
 
-    <!-- CSS VIẾT TRỰC TIẾP TRONG HTML -->
     <style>
-        /* ===== BIẾN MÀU – LIGHT MODE ===== */
         :root {
-            --primary-bg: #f8f9fa;
-            --secondary-bg: #ffffff;
-            --text-main: #212529;
-            --border-color: #dee2e6;
-            --accent-color: #007bff;
+            --bg: #f8f9fa;
+            --box: #ffffff;
+            --text: #212529;
+            --border: #dee2e6;
         }
 
-        /* ===== BIẾN MÀU – DARK MODE ===== */
         body.dark-mode {
-            --primary-bg: #121212;
-            --secondary-bg: #1e1e1e;
-            --text-main: #e4e6eb;
-            --border-color: #333333;
-            --accent-color: #375a7f;
+            --bg: #121212;
+            --box: #1e1e1e;
+            --text: #e4e6eb;
+            --border: #333333;
         }
 
-     /* ===== BODY ===== */
         body {
-            background-color: var(--primary-bg);
-            color: var(--text-main);
+            background: var(--bg);
+            color: var(--text);
             margin: 0;
             min-height: 100vh;
-            font-family: Arial, Helvetica, sans-serif;
-            transition: background-color 0.4s, color 0.4s;
+            font-family: Arial, sans-serif;
         }
 
-        /* ===== UI ===== */
-        .card,
-        .table,
-        .navbar {
-            background-color: var(--secondary-bg);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
+        .box {
+            background: var(--box);
+            border: 1px solid var(--border);
+            padding: 20px;
+            margin: 40px;
         }
 
-        body.dark-mode .card,
-        body.dark-mode .table,
-        body.dark-mode .navbar {
-            background-color: var(--secondary-bg);
-            color: var(--text-main);
-        }
-
-        /* ===== TABLE ===== */
-        .table th,
-        .table td {
-            padding: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        /* ===== NÚT ĐỔI THEME ===== */
-        #theme-toggle-btn {
+        #toggle {
             position: fixed;
             top: 15px;
             right: 15px;
             cursor: pointer;
             padding: 8px 14px;
             border-radius: 20px;
-            border: 1px solid var(--border-color);
-            background-color: var(--secondary-bg);
-            color: var(--text-main);
-            transition: 0.3s;
+            border: 1px solid var(--border);
+            background: var(--box);
+            color: var(--text);
         }
+    </style>
+</head>
 
-    #theme-toggle-btn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-</style>
+<body>
+
+    <div id="toggle">🌙 / ☀️</div>
+
+    {% block content %}{% endblock %}
+
+    <script>
+        document.getElementById("toggle").onclick = function () {
+            document.body.classList.toggle("dark-mode");
+        };
+    </script>
+
+</body>
+</html>
+
         
 
     
