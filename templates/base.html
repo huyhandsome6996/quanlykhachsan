@@ -526,6 +526,11 @@ function applyTheme(isDark) {
             text.textContent = 'Tối';
         }
     }
+     // Ưu tiên LocalStorage → hệ thống
+    const savedTheme = localStorage.getItem('user-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    applyTheme(savedTheme === 'dark' || (!savedTheme && prefersDark));
  </html>
 
 
