@@ -461,3 +461,70 @@
     </script> {% block scripts %}{% endblock %}
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b295c4661b9043d',t:'MTc2NjUwODY1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
+
+<script>
+    const toggleBtn = document.getElementById('dark-mode-toggle');
+    const body = document.body;
+
+    function setTheme(theme) {
+        if (theme === 'dark') {
+            body.classList.add('dark-mode');
+            if(toggleBtn) toggleBtn.innerHTML = '☀️ Mode Sáng';
+        } else {
+            body.classList.remove('dark-mode');
+            if(toggleBtn) toggleBtn.innerHTML = '🌙 Mode Tối';
+        }
+        localStorage.setItem('theme', theme);
+    }
+
+       const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    if (savedTheme) {
+        setTheme(savedTheme);
+    } else if (systemPrefersDark) {
+        setTheme('dark');
+    }
+  if(toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            const newTheme = body.classList.contains('dark-mode') ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+    }
+Windows/macOS sang tối
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (!localStorage.getItem('theme')) {
+            setTheme(e.matches ? 'dark' : 'light');
+        }
+    });
+</script>
+body {
+    /* Tạo hiệu ứng mượt 0.4 giây cho mọi thay đổi màu nền và chữ */
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease !important;
+}
+/* Hiệu ứng zoom nhẹ cho nút bấm khi di chuột vào */
+#dark-mode-toggle {
+    transition: transform 0.2s;
+    }
+#dark-mode-toggle:hover {
+    transform: scale(1.1);
+}
+
+<button id="backToTop" class="btn btn-primary" style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000; border-radius: 50%; width: 45px; height: 45px;">
+    ↑
+</button>
+<script>
+    const topBtn = document.getElementById("backToTop");
+
+    window.onscroll = function() {
+        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+            topBtn.style.display = "block";
+        } else {
+            topBtn.style.display = "none";
+        }
+    };
+ topBtn.onclick = function() {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    };
+</script>
