@@ -531,6 +531,16 @@ function applyTheme(isDark) {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
     applyTheme(savedTheme === 'dark' || (!savedTheme && prefersDark));
+      btn.addEventListener('click', function () {
+        const isDark = !body.classList.contains('dark-mode');
+        applyTheme(isDark);
+        localStorage.setItem('user-theme', isDark ? 'dark' : 'light');
+    });
+
+})();
+</script>
+
+<!-- ================= END THEME TOGGLE ================= -->
  </html>
 
 
