@@ -486,3 +486,9 @@
     } else if (systemPrefersDark) {
         setTheme('dark');
     }
+  if(toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            const newTheme = body.classList.contains('dark-mode') ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+    }
