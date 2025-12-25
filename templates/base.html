@@ -173,30 +173,41 @@
   </body>
 </html>
 
-<style>
-    /* Biến màu sắc để quản lý tập trung */
-    :root {
-        --primary-bg: #f8f9fa;
-        --secondary-bg: #ffffff;
-        --text-main: #e4e6eb;
-        --border-color: #333333;
-        --accent-color: #375a7f;
-    }
-    /* Định nghĩa bảng màu cho Dark Mode */
-    body.dark-mode {
-        --primary-bg: #121212;
-        --secondary-bg: #1e1e1e;
-                --text-main: #e4e6eb;
-        --border-color: #333333;
-        --accent-color: #375a7f;
-    }
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý khách sạn</title>
+
+    <!-- CSS VIẾT TRỰC TIẾP TRONG HTML -->
+    <style>
+        /* ===== BIẾN MÀU – LIGHT MODE ===== */
+        :root {
+            --primary-bg: #f8f9fa;
+            --secondary-bg: #ffffff;
+            --text-main: #212529;
+            --border-color: #dee2e6;
+            --accent-color: #007bff;
+        }
+
+        /* ===== BIẾN MÀU – DARK MODE ===== */
+        body.dark-mode {
+            --primary-bg: #121212;
+            --secondary-bg: #1e1e1e;
+            --text-main: #e4e6eb;
+            --border-color: #333333;
+            --accent-color: #375a7f;
+        }
+
     body {
         background-color: var(--primary-bg) !important;
         color: var(--text-main) !important;
-                transition: background-color 0.4s ease, color 0.4s ease;
+        transition: background-color 0.4s ease, color 0.4s ease;
         min-height: 100vh;
+        margin: 0;
     }
-    /* Làm cho Card và Table trông xịn hơn trong Dark Mode */
+
+    /* Các thành phần UI */
     body.dark-mode .card, 
     body.dark-mode .table, 
     body.dark-mode .modal-content,
@@ -206,11 +217,14 @@
         border-color: var(--border-color) !important;
     }
 
-    body.dark-mode .table td, body.dark-mode .table th {
+    /* Fix màu chữ cho bảng trong Dark Mode */
+    body.dark-mode .table td, 
+    body.dark-mode .table th {
         border-color: var(--border-color) !important;
         color: var(--text-main) !important;
     }
-    /* Hiệu ứng cho nút bấm */
+
+    /* Hiệu ứng cho nút bấm đổi màu */
     #theme-toggle-btn {
         cursor: pointer;
         padding: 8px 15px;
@@ -222,8 +236,8 @@
     }
 
     #theme-toggle-btn:hover {
-      transform: scale(1.05);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 </style>
         
